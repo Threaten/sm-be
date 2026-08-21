@@ -9,6 +9,12 @@ import {
 const courseTones = ['var(--pink)', 'var(--blue)', 'var(--lime)', 'var(--orange)']
 const courses = frontendCourses.map((course, index) => ({
   ...course,
+  classSize: course.classSize || '12 students',
+  nextIntake: course.nextIntake || 'September 14',
+  schedule: course.schedule || 'Tuesday evenings\n6:30 to 9:00',
+  location: course.location || 'Ho Chi Minh City',
+  imageAlt: course.imageAlt || `${course.title} class in progress`,
+  imageCaption: course.imageCaption || 'Skill & Mix / Ho Chi Minh City',
   tone: courseTones[index % courseTones.length],
 }))
 
@@ -100,6 +106,17 @@ const siteSettings = {
     address: '643 Nguyen Kiem Street\nDuc Nhuan Ward, Ho Chi Minh City',
     email: 'hello@skillandmix.com',
     phone: '+84 28 3822 0148',
+    headline: 'Practice makes delicious.',
+    ctaLabel: "Let's talk",
+    addressLabel: 'Find us',
+    contactLabel: 'Talk to us',
+    linksLabel: 'Explore',
+    copyright: '© 2026 Skill & Mix. Practice responsibly.',
+    links: [
+      { label: 'Courses', href: '/courses' },
+      { label: 'Instagram', href: '/gallery' },
+      { label: 'Visit', href: '/contact-us' },
+    ],
   },
   theme: {
     background: 'var(--paper)',
@@ -111,6 +128,20 @@ const siteSettings = {
 }
 
 const siteContent = {
+  pageIntros: [
+    { page: 'about' as const, index: '01', eyebrow: 'Inside Skill & Mix', title: 'A SCHOOL FOR THIRSTY MINDS.', intro: 'We built the class we wished existed: practical, demanding, generous, and a little bit chaotic.', accent: 'coral' as const },
+    { page: 'staffs' as const, index: '02', eyebrow: 'The people behind the bar', title: 'GOOD HANDS. SHARP TONGUES.', intro: 'Working bartenders, obsessive teachers, and generous critics. Meet the people who will make your next drink better.', accent: 'cobalt' as const },
+    { page: 'services' as const, index: '03', eyebrow: 'Beyond the classroom', title: 'WE BRING THE BAR TO THE BRIEF.', intro: 'Private workshops, sharper menus, stronger teams. Tell us what needs mixing.', accent: 'coral' as const },
+    { page: 'courses' as const, index: '04', eyebrow: 'The current menu', title: 'PICK YOUR NEXT OBSESSION.', intro: 'Small classes, real tools, working instructors, and enough repetition to turn knowledge into instinct.', accent: 'coral' as const },
+    { page: 'gallery' as const, index: '05', eyebrow: 'Inside the lab', title: 'MESSY HANDS. CLEAN DRINKS.', intro: 'Classes, experiments, guest shifts, bad ideas that became good ideas, and the occasional perfect lemon peel.', accent: 'cobalt' as const },
+    { page: 'contact' as const, index: '06', eyebrow: 'Say hello', title: 'QUESTIONS? GOOD.', intro: 'Ask about a course, plan a private class, bring us a strange brief, or just come see the room.', accent: 'coral' as const },
+  ],
+  marquees: { home: 'Shake / Stir / Taste / Repeat', about: 'Palate first / Ego last', courses: 'Small class / Big practice' },
+  featuredCourses: { eyebrow: 'Choose your poison', title: 'Pick your lane.', linkLabel: 'View all courses ↗' },
+  courseHelp: { eyebrow: "Can't choose?", title: "Tell us what you can make now. We'll tell you what comes next.", linkLabel: 'Ask a human' },
+  staffNote: { eyebrow: 'Guest teachers, too', title: 'The team changes with the season.', copy: 'Distillers, bar owners, ceramicists, chefs, and the occasional deeply opinionated ice sculptor join selected classes.', linkLabel: 'Teach with us' },
+  courseDetail: { backLabel: 'Course library', durationLabel: 'Duration', tuitionLabel: 'Tuition', classSizeLabel: 'Class size', reserveLabel: 'Reserve a seat', syllabusEyebrow: 'Course structure', syllabusTitle: 'What you will practice', syllabusCopy: 'Each session combines demonstration, guided drills, independent work, and direct feedback.', firstLessonCopy: 'Learn it, taste it, and repeat it until the movement feels obvious.', lessonCopy: 'See the technique, understand why it works, then build dependable muscle memory.', intakeLabel: 'Next intake' },
+  staffDetail: { backLabel: 'All staff', profileLabel: 'Profile', stamp: 'Skill\n& Mix\nfaculty', bioLabel: 'Behind the apron', achievementsEyebrow: 'Awards & achievements', achievementsTitle: 'A few things worth raising a glass to.', practiceEyebrow: 'At the workbench', practiceTitle: 'What {name} teaches.', offDutyLabel: 'Off duty', favoritePourLabel: 'Favorite pour:', nextLabel: 'Next behind the bar' },
   homeHero: {
     kickerLeft: 'Ho Chi Minh City / Since 2026',
     kickerRight: 'Classes now mixing',

@@ -169,8 +169,14 @@ export interface Course {
   level: string;
   duration: string;
   price: string;
+  classSize: string;
+  nextIntake: string;
+  schedule: string;
+  location: string;
   summary: string;
   image: string;
+  imageAlt: string;
+  imageCaption: string;
   tone: string;
   syllabus?:
     | {
@@ -386,8 +392,14 @@ export interface CoursesSelect<T extends boolean = true> {
   level?: T;
   duration?: T;
   price?: T;
+  classSize?: T;
+  nextIntake?: T;
+  schedule?: T;
+  location?: T;
   summary?: T;
   image?: T;
+  imageAlt?: T;
+  imageCaption?: T;
   tone?: T;
   syllabus?:
     | T
@@ -533,6 +545,19 @@ export interface SiteSetting {
     address: string;
     email: string;
     phone: string;
+    headline: string;
+    ctaLabel: string;
+    addressLabel: string;
+    contactLabel: string;
+    linksLabel: string;
+    copyright: string;
+    links?:
+      | {
+          label: string;
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   theme: {
     background: string;
@@ -550,6 +575,64 @@ export interface SiteSetting {
  */
 export interface SiteContent {
   id: string;
+  pageIntros?:
+    | {
+        page: 'about' | 'staffs' | 'services' | 'courses' | 'gallery' | 'contact';
+        index: string;
+        eyebrow: string;
+        title: string;
+        intro: string;
+        accent?: ('coral' | 'cobalt') | null;
+        id?: string | null;
+      }[]
+    | null;
+  marquees: {
+    home: string;
+    about: string;
+    courses: string;
+  };
+  featuredCourses: {
+    eyebrow: string;
+    title: string;
+    linkLabel: string;
+  };
+  courseHelp: {
+    eyebrow: string;
+    title: string;
+    linkLabel: string;
+  };
+  staffNote: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    linkLabel: string;
+  };
+  courseDetail: {
+    backLabel: string;
+    durationLabel: string;
+    tuitionLabel: string;
+    classSizeLabel: string;
+    reserveLabel: string;
+    syllabusEyebrow: string;
+    syllabusTitle: string;
+    syllabusCopy: string;
+    firstLessonCopy: string;
+    lessonCopy: string;
+    intakeLabel: string;
+  };
+  staffDetail: {
+    backLabel: string;
+    profileLabel: string;
+    stamp: string;
+    bioLabel: string;
+    achievementsEyebrow: string;
+    achievementsTitle: string;
+    practiceEyebrow: string;
+    practiceTitle: string;
+    offDutyLabel: string;
+    favoritePourLabel: string;
+    nextLabel: string;
+  };
   homeHero: {
     kickerLeft: string;
     kickerRight: string;
@@ -641,6 +724,19 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         address?: T;
         email?: T;
         phone?: T;
+        headline?: T;
+        ctaLabel?: T;
+        addressLabel?: T;
+        contactLabel?: T;
+        linksLabel?: T;
+        copyright?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
       };
   theme?:
     | T
@@ -660,6 +756,76 @@ export interface SiteSettingsSelect<T extends boolean = true> {
  * via the `definition` "site-content_select".
  */
 export interface SiteContentSelect<T extends boolean = true> {
+  pageIntros?:
+    | T
+    | {
+        page?: T;
+        index?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        accent?: T;
+        id?: T;
+      };
+  marquees?:
+    | T
+    | {
+        home?: T;
+        about?: T;
+        courses?: T;
+      };
+  featuredCourses?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        linkLabel?: T;
+      };
+  courseHelp?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        linkLabel?: T;
+      };
+  staffNote?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        linkLabel?: T;
+      };
+  courseDetail?:
+    | T
+    | {
+        backLabel?: T;
+        durationLabel?: T;
+        tuitionLabel?: T;
+        classSizeLabel?: T;
+        reserveLabel?: T;
+        syllabusEyebrow?: T;
+        syllabusTitle?: T;
+        syllabusCopy?: T;
+        firstLessonCopy?: T;
+        lessonCopy?: T;
+        intakeLabel?: T;
+      };
+  staffDetail?:
+    | T
+    | {
+        backLabel?: T;
+        profileLabel?: T;
+        stamp?: T;
+        bioLabel?: T;
+        achievementsEyebrow?: T;
+        achievementsTitle?: T;
+        practiceEyebrow?: T;
+        practiceTitle?: T;
+        offDutyLabel?: T;
+        favoritePourLabel?: T;
+        nextLabel?: T;
+      };
   homeHero?:
     | T
     | {

@@ -1,12 +1,99 @@
 import type { GlobalConfig } from 'payload'
 import { anyone } from '@/access/anyone'
 
+const pageIntroFields = [
+  { name: 'index', type: 'text' as const, required: true },
+  { name: 'eyebrow', type: 'text' as const, required: true },
+  { name: 'title', type: 'text' as const, required: true },
+  { name: 'intro', type: 'textarea' as const, required: true },
+  { name: 'accent', type: 'select' as const, options: ['coral', 'cobalt'], defaultValue: 'coral' },
+]
+
 export const SiteContent: GlobalConfig = {
   slug: 'site-content',
   access: {
     read: anyone,
   },
   fields: [
+    {
+      name: 'pageIntros',
+      type: 'array',
+      fields: [
+        { name: 'page', type: 'select', required: true, unique: true, options: ['about', 'staffs', 'services', 'courses', 'gallery', 'contact'] },
+        ...pageIntroFields,
+      ],
+    },
+    {
+      name: 'marquees',
+      type: 'group',
+      fields: [
+        { name: 'home', type: 'text', required: true },
+        { name: 'about', type: 'text', required: true },
+        { name: 'courses', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'featuredCourses',
+      type: 'group',
+      fields: [
+        { name: 'eyebrow', type: 'text', required: true },
+        { name: 'title', type: 'text', required: true },
+        { name: 'linkLabel', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'courseHelp',
+      type: 'group',
+      fields: [
+        { name: 'eyebrow', type: 'text', required: true },
+        { name: 'title', type: 'textarea', required: true },
+        { name: 'linkLabel', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'staffNote',
+      type: 'group',
+      fields: [
+        { name: 'eyebrow', type: 'text', required: true },
+        { name: 'title', type: 'text', required: true },
+        { name: 'copy', type: 'textarea', required: true },
+        { name: 'linkLabel', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'courseDetail',
+      type: 'group',
+      fields: [
+        { name: 'backLabel', type: 'text', required: true },
+        { name: 'durationLabel', type: 'text', required: true },
+        { name: 'tuitionLabel', type: 'text', required: true },
+        { name: 'classSizeLabel', type: 'text', required: true },
+        { name: 'reserveLabel', type: 'text', required: true },
+        { name: 'syllabusEyebrow', type: 'text', required: true },
+        { name: 'syllabusTitle', type: 'text', required: true },
+        { name: 'syllabusCopy', type: 'textarea', required: true },
+        { name: 'firstLessonCopy', type: 'textarea', required: true },
+        { name: 'lessonCopy', type: 'textarea', required: true },
+        { name: 'intakeLabel', type: 'text', required: true },
+      ],
+    },
+    {
+      name: 'staffDetail',
+      type: 'group',
+      fields: [
+        { name: 'backLabel', type: 'text', required: true },
+        { name: 'profileLabel', type: 'text', required: true },
+        { name: 'stamp', type: 'textarea', required: true },
+        { name: 'bioLabel', type: 'text', required: true },
+        { name: 'achievementsEyebrow', type: 'text', required: true },
+        { name: 'achievementsTitle', type: 'text', required: true },
+        { name: 'practiceEyebrow', type: 'text', required: true },
+        { name: 'practiceTitle', type: 'text', required: true },
+        { name: 'offDutyLabel', type: 'text', required: true },
+        { name: 'favoritePourLabel', type: 'text', required: true },
+        { name: 'nextLabel', type: 'text', required: true },
+      ],
+    },
     {
       name: 'homeHero',
       type: 'group',

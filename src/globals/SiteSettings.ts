@@ -23,6 +23,20 @@ export const SiteSettings: GlobalConfig = {
         { name: 'address', type: 'textarea', required: true },
         { name: 'email', type: 'text', required: true },
         { name: 'phone', type: 'text', required: true },
+        { name: 'headline', type: 'text', required: true, defaultValue: 'Practice makes delicious.' },
+        { name: 'ctaLabel', type: 'text', required: true, defaultValue: "Let's talk" },
+        { name: 'addressLabel', type: 'text', required: true, defaultValue: 'Find us' },
+        { name: 'contactLabel', type: 'text', required: true, defaultValue: 'Talk to us' },
+        { name: 'linksLabel', type: 'text', required: true, defaultValue: 'Explore' },
+        { name: 'copyright', type: 'text', required: true, defaultValue: '© 2026 Skill & Mix. Practice responsibly.' },
+        {
+          name: 'links',
+          type: 'array',
+          fields: [
+            { name: 'label', type: 'text', required: true },
+            { name: 'href', type: 'text', required: true },
+          ],
+        },
       ],
     },
     {
