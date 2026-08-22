@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    media: Media;
     courses: Course;
     staff: Staff;
     services: Service;
@@ -81,6 +82,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     staff: StaffSelect<false> | StaffSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
@@ -159,6 +161,43 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    wide?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses".
  */
 export interface Course {
@@ -174,7 +213,7 @@ export interface Course {
   schedule: string;
   location: string;
   summary: string;
-  image: string;
+  image: string | Media;
   imageAlt: string;
   imageCaption: string;
   tone: string;
@@ -198,7 +237,7 @@ export interface Staff {
   shortName: string;
   role: string;
   note: string;
-  image: string;
+  image: string | Media;
   bio?:
     | {
         paragraph: string;
@@ -235,7 +274,7 @@ export interface Service {
   title: string;
   label: string;
   copy: string;
-  image: string;
+  image: string | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -245,7 +284,7 @@ export interface Service {
  */
 export interface Gallery {
   id: string;
-  image: string;
+  image: string | Media;
   caption: string;
   updatedAt: string;
   createdAt: string;
@@ -295,6 +334,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
       } | null)
     | ({
         relationTo: 'courses';
@@ -379,6 +422,48 @@ export interface UsersSelect<T extends boolean = true> {
         id?: T;
         createdAt?: T;
         expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        wide?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
       };
 }
 /**
@@ -642,8 +727,8 @@ export interface SiteContent {
     titleLineThree: string;
     summary: string;
     buttonLabel: string;
-    imageLeft: string;
-    imageRight: string;
+    imageLeft: string | Media;
+    imageRight: string | Media;
     burstTop: string;
     burstBottom: string;
     noteLineOne: string;
@@ -653,7 +738,7 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     copy: string;
-    image: string;
+    image: string | Media;
     stampTop: string;
     stampBottom: string;
   };
@@ -666,10 +751,10 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     copy: string;
-    imageOne: string;
+    imageOne: string | Media;
     imageOneAlt: string;
     imageOneCaption: string;
-    imageTwo: string;
+    imageTwo: string | Media;
     imageTwoAlt: string;
     stampTop: string;
     stampBottom: string;

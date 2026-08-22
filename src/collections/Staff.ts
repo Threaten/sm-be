@@ -13,7 +13,7 @@ export const Staff: CollectionConfig = {
     { name: 'shortName', type: 'text', required: true },
     { name: 'role', type: 'text', required: true },
     { name: 'note', type: 'text', required: true },
-    { name: 'image', type: 'text', required: true },
+    { name: 'image', type: 'upload', relationTo: 'media', required: true },
     {
       name: 'bio',
       type: 'array',

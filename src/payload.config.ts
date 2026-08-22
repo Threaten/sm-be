@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import { ContactSubmissions } from './collections/ContactSubmissions'
 import { Courses } from './collections/Courses'
 import { Gallery } from './collections/Gallery'
+import { Media } from './collections/Media'
 import { Services } from './collections/Services'
 import { Staff } from './collections/Staff'
 import { Users } from './collections/Users'
@@ -31,6 +32,7 @@ export default buildConfig({
   }),
   collections: [
     Users,
+    Media,
     Courses,
     Staff,
     Services,

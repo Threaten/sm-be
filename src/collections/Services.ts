@@ -12,6 +12,6 @@ export const Services: CollectionConfig = {
     { name: 'title', type: 'text', required: true },
     { name: 'label', type: 'text', required: true },
     { name: 'copy', type: 'textarea', required: true },
-    { name: 'image', type: 'text', required: true },
+    { name: 'image', type: 'upload', relationTo: 'media', required: true },
   ],
 }

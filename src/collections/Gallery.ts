@@ -8,7 +8,7 @@ export const Gallery: CollectionConfig = {
     read: anyone,
   },
   fields: [
-    { name: 'image', type: 'text', required: true },
+    { name: 'image', type: 'upload', relationTo: 'media', required: true },
     { name: 'caption', type: 'text', required: true },
   ],
 }

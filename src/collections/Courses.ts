@@ -19,7 +19,7 @@ export const Courses: CollectionConfig = {
     { name: 'schedule', type: 'textarea', required: true, defaultValue: 'Tuesday evenings\n6:30 to 9:00' },
     { name: 'location', type: 'text', required: true, defaultValue: 'Ho Chi Minh City' },
     { name: 'summary', type: 'textarea', required: true },
-    { name: 'image', type: 'text', required: true },
+    { name: 'image', type: 'upload', relationTo: 'media', required: true },
     { name: 'imageAlt', type: 'text', required: true, defaultValue: 'Cocktail class in progress' },
     { name: 'imageCaption', type: 'text', required: true, defaultValue: 'Skill & Mix / Ho Chi Minh City' },
     { name: 'tone', type: 'text', required: true },

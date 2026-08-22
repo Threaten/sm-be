@@ -6,6 +6,39 @@ import {
   staff as frontendStaff,
 } from '../../fe/lib/data'
 
+type PayloadClient = Awaited<ReturnType<typeof getPayload>>
+
+async function uploadSeedImage(
+  payload: PayloadClient,
+  sourceURL: string,
+  filename: string,
+  alt: string,
+): Promise<string> {
+  const existing = await payload.find({
+    collection: 'media',
+    where: { filename: { equals: filename } },
+    limit: 1,
+    overrideAccess: true,
+  })
+  if (existing.docs[0]) return String(existing.docs[0].id)
+
+  const response = await fetch(sourceURL)
+  if (!response.ok) throw new Error(`Could not download seed image: ${sourceURL}`)
+  const data = Buffer.from(await response.arrayBuffer())
+  const media = await payload.create({
+    collection: 'media',
+    data: { alt },
+    file: {
+      data,
+      mimetype: response.headers.get('content-type') || 'image/jpeg',
+      name: filename,
+      size: data.byteLength,
+    },
+    overrideAccess: true,
+  })
+  return String(media.id)
+}
+
 const courseTones = ['var(--pink)', 'var(--blue)', 'var(--lime)', 'var(--orange)']
 const courses = frontendCourses.map((course, index) => ({
   ...course,
@@ -249,6 +282,7 @@ const siteContent = {
 async function upsertCourse(payload: Awaited<ReturnType<typeof getPayload>>, course: (typeof courses)[number]) {
   const existing = await payload.find({
     collection: 'courses',
+    depth: 0,
     where: { slug: { equals: course.slug } },
     limit: 1,
     overrideAccess: true,
@@ -275,6 +309,7 @@ async function upsertCourse(payload: Awaited<ReturnType<typeof getPayload>>, cou
 async function upsertStaff(payload: Awaited<ReturnType<typeof getPayload>>, person: (typeof staff)[number]) {
   const existing = await payload.find({
     collection: 'staff',
+    depth: 0,
     where: { slug: { equals: person.slug } },
     limit: 1,
     overrideAccess: true,
@@ -302,6 +337,7 @@ async function upsertStaff(payload: Awaited<ReturnType<typeof getPayload>>, pers
 async function upsertService(payload: Awaited<ReturnType<typeof getPayload>>, service: (typeof services)[number]) {
   const existing = await payload.find({
     collection: 'services',
+    depth: 0,
     where: { number: { equals: service.number } },
     limit: 1,
     overrideAccess: true,
@@ -326,6 +362,7 @@ async function upsertGalleryItem(
 ) {
   const existing = await payload.find({
     collection: 'gallery',
+    depth: 0,
     where: { caption: { equals: item.caption } },
     limit: 1,
     overrideAccess: true,
@@ -350,19 +387,41 @@ async function seedSkillMixData() {
   payload.logger.info('Seeding Skill & Mix collections and globals...')
 
   for (const course of courses) {
-    await upsertCourse(payload, course)
+    const image = await uploadSeedImage(payload, course.image, `course-${course.slug}.jpg`, course.imageAlt)
+    await upsertCourse(payload, { ...course, image })
   }
 
   for (const person of staff) {
-    await upsertStaff(payload, person)
+    const image = await uploadSeedImage(payload, person.image, `staff-${person.slug}.jpg`, `${person.name}, ${person.role}`)
+    await upsertStaff(payload, { ...person, image })
   }
 
   for (const service of services) {
-    await upsertService(payload, service)
+    const image = await uploadSeedImage(payload, service.image, `service-${service.number}.jpg`, service.title)
+    await upsertService(payload, { ...service, image })
   }
 
   for (const [index, image] of galleryImages.entries()) {
-    await upsertGalleryItem(payload, { image, caption: galleryCaptions[index] })
+    const media = await uploadSeedImage(payload, image, `gallery-${index + 1}.jpg`, galleryCaptions[index])
+    await upsertGalleryItem(payload, { image: media, caption: galleryCaptions[index] })
+  }
+
+  const uploadedSiteContent = {
+    ...siteContent,
+    homeHero: {
+      ...siteContent.homeHero,
+      imageLeft: await uploadSeedImage(payload, siteContent.homeHero.imageLeft, 'home-hero-left.jpg', 'Bartending class in progress'),
+      imageRight: await uploadSeedImage(payload, siteContent.homeHero.imageRight, 'home-hero-right.jpg', 'Finished cocktail'),
+    },
+    homeManifesto: {
+      ...siteContent.homeManifesto,
+      image: await uploadSeedImage(payload, siteContent.homeManifesto.image, 'home-manifesto.jpg', 'Friends raising cocktails around a table'),
+    },
+    story: {
+      ...siteContent.story,
+      imageOne: await uploadSeedImage(payload, siteContent.story.imageOne, 'story-one.jpg', siteContent.story.imageOneAlt),
+      imageTwo: await uploadSeedImage(payload, siteContent.story.imageTwo, 'story-two.jpg', siteContent.story.imageTwoAlt),
+    },
   }
 
   await payload.updateGlobal({
@@ -373,7 +432,7 @@ async function seedSkillMixData() {
 
   await payload.updateGlobal({
     slug: 'site-content',
-    data: siteContent,
+    data: uploadedSiteContent,
     overrideAccess: true,
   })
 
