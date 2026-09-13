@@ -207,7 +207,14 @@ export interface Course {
   title: string;
   level: string;
   duration: string;
+  /**
+   * The standard course price, for example: 8.000.000₫
+   */
   price: string;
+  /**
+   * Optional. When set, this is highlighted on the website and the regular price is crossed out.
+   */
+  promotionPrice?: string | null;
   classSize: string;
   nextIntake: string;
   schedule: string;
@@ -477,6 +484,7 @@ export interface CoursesSelect<T extends boolean = true> {
   level?: T;
   duration?: T;
   price?: T;
+  promotionPrice?: T;
   classSize?: T;
   nextIntake?: T;
   schedule?: T;
@@ -618,6 +626,24 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteSetting {
   id: string;
+  /**
+   * Optional notification shown above the main navigation.
+   */
+  announcementBar: {
+    /**
+     * Show or hide the top bar.
+     */
+    enabled?: boolean | null;
+    message: string;
+    /**
+     * Optional link text.
+     */
+    linkLabel?: string | null;
+    /**
+     * Optional internal path or full URL.
+     */
+    linkHref?: string | null;
+  };
   navigation?:
     | {
         label: string;
@@ -676,10 +702,16 @@ export interface SiteContent {
     about: string;
     courses: string;
   };
-  featuredCourses: {
+  courseFaq: {
     eyebrow: string;
     title: string;
-    linkLabel: string;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   courseHelp: {
     eyebrow: string;
@@ -718,6 +750,20 @@ export interface SiteContent {
     favoritePourLabel: string;
     nextLabel: string;
   };
+  featuredInstructor: {
+    eyebrow: string;
+    title: string;
+    /**
+     * Choose the instructor shown on the homepage.
+     */
+    person?: (string | null) | Staff;
+    linkLabel: string;
+  };
+  featuredCourses: {
+    eyebrow: string;
+    title: string;
+    linkLabel: string;
+  };
   homeHero: {
     kickerLeft: string;
     kickerRight: string;
@@ -742,10 +788,29 @@ export interface SiteContent {
     stampTop: string;
     stampBottom: string;
   };
-  homeQuote: {
-    quote: string;
-    author: string;
-    role: string;
+  /**
+   * Ten short testimonials displayed in the homepage carousel.
+   */
+  homeTestimonials?:
+    | {
+        quote: string;
+        author: string;
+        role: string;
+        id?: string | null;
+      }[]
+    | null;
+  entryPopup: {
+    /**
+     * Turn the website entry popup on or off.
+     */
+    enabled?: boolean | null;
+    eyebrow: string;
+    title: string;
+    copy: string;
+    image?: (string | null) | Media;
+    ctaLabel: string;
+    ctaHref: string;
+    dismissLabel: string;
   };
   story: {
     eyebrow: string;
@@ -795,6 +860,14 @@ export interface SiteContent {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  announcementBar?:
+    | T
+    | {
+        enabled?: T;
+        message?: T;
+        linkLabel?: T;
+        linkHref?: T;
+      };
   navigation?:
     | T
     | {
@@ -859,12 +932,18 @@ export interface SiteContentSelect<T extends boolean = true> {
         about?: T;
         courses?: T;
       };
-  featuredCourses?:
+  courseFaq?:
     | T
     | {
         eyebrow?: T;
         title?: T;
-        linkLabel?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
       };
   courseHelp?:
     | T
@@ -911,6 +990,21 @@ export interface SiteContentSelect<T extends boolean = true> {
         favoritePourLabel?: T;
         nextLabel?: T;
       };
+  featuredInstructor?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        person?: T;
+        linkLabel?: T;
+      };
+  featuredCourses?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        linkLabel?: T;
+      };
   homeHero?:
     | T
     | {
@@ -939,12 +1033,25 @@ export interface SiteContentSelect<T extends boolean = true> {
         stampTop?: T;
         stampBottom?: T;
       };
-  homeQuote?:
+  homeTestimonials?:
     | T
     | {
         quote?: T;
         author?: T;
         role?: T;
+        id?: T;
+      };
+  entryPopup?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        image?: T;
+        ctaLabel?: T;
+        ctaHref?: T;
+        dismissLabel?: T;
       };
   story?:
     | T

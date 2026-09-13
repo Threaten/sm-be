@@ -1,4 +1,5 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { enTranslations } from '@payloadcms/translations/languages/en'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -18,35 +19,60 @@ import { getServerSideURL } from './utilities/getURL'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const serverURL = getServerSideURL()
-const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000'
+const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3003'
 
 export default buildConfig({
   admin: {
+    components: {
+      graphics: {
+        Icon: '@/components/admin/SkillMixBrand#SkillMixIcon',
+        Logo: '@/components/admin/SkillMixBrand#SkillMixLogo',
+      },
+    },
     importMap: {
       baseDir: path.resolve(dirname),
+    },
+    meta: {
+      defaultOGImageType: 'off',
+      description: 'Skill & Mix content management system.',
+      icons: {
+        icon: '/favicon.svg',
+        shortcut: '/favicon.svg',
+      },
+      openGraph: {
+        description: 'Skill & Mix content management system.',
+        siteName: 'Skill & Mix CMS',
+        title: 'Skill & Mix CMS',
+      },
+      title: 'Admin',
+      titleSuffix: '— Skill & Mix CMS',
     },
     user: Users.slug,
   },
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
-  collections: [
-    Users,
-    Media,
-    Courses,
-    Staff,
-    Services,
-    Gallery,
-    ContactSubmissions,
-  ],
+  collections: [Users, Media, Courses, Staff, Services, Gallery, ContactSubmissions],
   cors: {
     origins: [serverURL, frontendURL].filter(Boolean),
   },
   csrf: [serverURL, frontendURL].filter(Boolean),
   globals: [SiteSettings, SiteContent],
+  i18n: {
+    translations: {
+      en: {
+        ...enTranslations,
+        general: {
+          ...enTranslations.general,
+          payloadSettings: 'CMS Settings',
+        },
+      },
+    },
+  },
   secret: process.env.PAYLOAD_SECRET,
   serverURL,
   sharp,
+  telemetry: false,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

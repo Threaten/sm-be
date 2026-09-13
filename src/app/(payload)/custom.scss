@@ -1,0 +1,59 @@
+.skill-mix-brand {
+  align-items: flex-start;
+  color: var(--theme-text);
+  display: inline-flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
+  gap: 4px;
+  line-height: 1;
+}
+
+.skill-mix-brand__name {
+  align-items: baseline;
+  display: flex;
+  font-size: 31px;
+  font-weight: 900;
+  letter-spacing: -2.2px;
+  text-transform: lowercase;
+}
+
+.skill-mix-brand__amp {
+  color: #cf1b14;
+  font-size: 0.72em;
+  letter-spacing: -1px;
+  margin: 0 3px;
+}
+
+.skill-mix-brand__star {
+  color: #cf1b14;
+  font-size: 0.6em;
+  margin-left: 2px;
+  transform: translateY(-0.45em);
+}
+
+.skill-mix-brand__product {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+}
+
+.skill-mix-icon {
+  align-items: center;
+  background: #cf1b14;
+  border-radius: 7px;
+  color: #fff;
+  display: inline-flex;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  height: 25px;
+  justify-content: center;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  width: 25px;
+}
+
+.skill-mix-icon > span {
+  transform: translateY(0.25px);
+}

@@ -1,12 +1,46 @@
 import type { GlobalConfig } from 'payload'
 import { anyone } from '@/access/anyone'
+import { authenticated } from '@/access/authenticated'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   access: {
     read: anyone,
+    update: authenticated,
   },
   fields: [
+    {
+      name: 'announcementBar',
+      label: 'Top Bar',
+      type: 'group',
+      admin: {
+        description: 'Optional notification shown above the main navigation.',
+      },
+      fields: [
+        {
+          name: 'enabled',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: { description: 'Show or hide the top bar.' },
+        },
+        {
+          name: 'message',
+          type: 'text',
+          required: true,
+          defaultValue: 'Đăng ký tư vấn miễn phí cùng Skill & Mix.',
+        },
+        {
+          name: 'linkLabel',
+          type: 'text',
+          admin: { description: 'Optional link text.' },
+        },
+        {
+          name: 'linkHref',
+          type: 'text',
+          admin: { description: 'Optional internal path or full URL.' },
+        },
+      ],
+    },
     {
       name: 'navigation',
       type: 'array',

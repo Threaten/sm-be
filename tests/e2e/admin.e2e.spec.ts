@@ -19,23 +19,22 @@ test.describe('Admin Panel', () => {
   })
 
   test('can navigate to dashboard', async () => {
-    await page.goto('http://localhost:3000/admin')
-    await expect(page).toHaveURL('http://localhost:3000/admin')
+    await page.goto('http://localhost:3002/admin')
+    await expect(page).toHaveURL('http://localhost:3002/admin')
     const dashboardArtifact = page.locator('span[title="Dashboard"]').first()
     await expect(dashboardArtifact).toBeVisible()
   })
 
   test('can navigate to list view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/users')
-    await expect(page).toHaveURL('http://localhost:3000/admin/collections/users')
+    await page.goto('http://localhost:3002/admin/collections/users')
+    await expect(page).toHaveURL('http://localhost:3002/admin/collections/users')
     const listViewArtifact = page.locator('h1', { hasText: 'Users' }).first()
     await expect(listViewArtifact).toBeVisible()
   })
 
-  test('can navigate to edit view', async () => {
-    await page.goto('http://localhost:3000/admin/collections/pages/create')
-    await expect(page).toHaveURL(/\/admin\/collections\/pages\/[a-zA-Z0-9-_]+/)
-    const editViewArtifact = page.locator('input[name="title"]')
-    await expect(editViewArtifact).toBeVisible()
+  test('can edit site content', async () => {
+    await page.goto('http://localhost:3002/admin/globals/site-content')
+    await expect(page).toHaveURL('http://localhost:3002/admin/globals/site-content')
+    await expect(page.locator('form').first()).toBeVisible()
   })
 })
