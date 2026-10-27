@@ -67,13 +67,15 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
     courses: Course;
     staff: Staff;
     services: Service;
-    gallery: Gallery;
+    testimonials: Testimonial;
     'contact-submissions': ContactSubmission;
+    media: Media;
+    gallery: Gallery;
+    users: User;
+    'audit-logs': AuditLog;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -81,13 +83,15 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     staff: StaffSelect<false> | StaffSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
-    gallery: GallerySelect<false> | GallerySelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    gallery: GallerySelect<false> | GallerySelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    'audit-logs': AuditLogsSelect<false> | AuditLogsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -98,12 +102,26 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    'home-page': HomePage;
+    'about-page': AboutPage;
+    'courses-page': CoursesPage;
+    'team-page': TeamPage;
+    'services-page': ServicesPage;
+    'gallery-page': GalleryPage;
+    'contact-page': ContactPage;
     'site-settings': SiteSetting;
-    'site-content': SiteContent;
+    'entry-popup': EntryPopup;
   };
   globalsSelect: {
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'courses-page': CoursesPageSelect<false> | CoursesPageSelect<true>;
+    'team-page': TeamPageSelect<false> | TeamPageSelect<true>;
+    'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
+    'gallery-page': GalleryPageSelect<false> | GalleryPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
-    'site-content': SiteContentSelect<false> | SiteContentSelect<true>;
+    'entry-popup': EntryPopupSelect<false> | EntryPopupSelect<true>;
   };
   locale: null;
   widgets: {
@@ -134,30 +152,55 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Shown on the website in this order. Course numbers are added automatically.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "courses".
  */
-export interface User {
+export interface Course {
   id: string;
-  name?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+  _order?: string | null;
+  title: string;
+  /**
+   * Used in the page URL. Leave empty to generate it from the title.
+   */
+  slug: string;
+  /**
+   * Colour used for this course.
+   */
+  accent: 'coral' | 'cobalt' | 'acid';
+  /**
+   * Who the course is for.
+   */
+  level: string;
+  summary: string;
+  image: string | Media;
+  imageCaption: string;
+  duration: string;
+  classSize: string;
+  nextIntake: string;
+  location: string;
+  /**
+   * One line per row.
+   */
+  schedule: string;
+  /**
+   * For example 8000000, or "Liên hệ".
+   */
+  price: string;
+  /**
+   * Optional. When set, the regular price is crossed out.
+   */
+  promotionPrice?: string | null;
+  syllabus?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        title: string;
+        description: string;
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -165,6 +208,9 @@ export interface User {
  */
 export interface Media {
   id: string;
+  /**
+   * Describes the image for screen readers and search engines. Used everywhere the image appears.
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -197,68 +243,43 @@ export interface Media {
   };
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses".
- */
-export interface Course {
-  id: string;
-  slug: string;
-  index: string;
-  title: string;
-  level: string;
-  duration: string;
-  /**
-   * The standard course price, for example: 8.000.000₫
-   */
-  price: string;
-  /**
-   * Optional. When set, this is highlighted on the website and the regular price is crossed out.
-   */
-  promotionPrice?: string | null;
-  classSize: string;
-  nextIntake: string;
-  schedule: string;
-  location: string;
-  summary: string;
-  image: string | Media;
-  imageAlt: string;
-  imageCaption: string;
-  tone: string;
-  syllabus?:
-    | {
-        item: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
+ * Shown on the Team page in this order.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "staff".
  */
 export interface Staff {
   id: string;
-  slug: string;
+  _order?: string | null;
   name: string;
+  /**
+   * First name used in buttons, e.g. "Meet Grace".
+   */
   shortName: string;
+  /**
+   * Used in the page URL. Leave empty to generate it from the name.
+   */
+  slug: string;
   role: string;
+  /**
+   * One-line teaser shown on the team card.
+   */
   note: string;
   image: string | Media;
+  quote: string;
   bio?:
     | {
         paragraph: string;
         id?: string | null;
       }[]
     | null;
-  quote: string;
+  teachingFocus: string;
   specialties?:
     | {
         item: string;
         id?: string | null;
       }[]
     | null;
-  teachingFocus: string;
   favoritePour: string;
   achievements?:
     | {
@@ -272,13 +293,18 @@ export interface Staff {
   createdAt: string;
 }
 /**
+ * Shown on the Services page in this order. Numbers are added automatically.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
  */
 export interface Service {
   id: string;
-  number: string;
+  _order?: string | null;
   title: string;
+  /**
+   * Short audience or format line, for example: 8 to 24 guests.
+   */
   label: string;
   copy: string;
   image: string | Media;
@@ -286,13 +312,20 @@ export interface Service {
   createdAt: string;
 }
 /**
+ * Student quotes shown in the home page carousel. Drag to reorder.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "gallery".
+ * via the `definition` "testimonials".
  */
-export interface Gallery {
+export interface Testimonial {
   id: string;
-  image: string | Media;
-  caption: string;
+  _order?: string | null;
+  quote: string;
+  author: string;
+  /**
+   * For example: Học viên · 22 tuổi, or the course they took.
+   */
+  role: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -304,13 +337,73 @@ export interface ContactSubmission {
   id: string;
   name: string;
   phone: string;
-  courses?:
+  courses: (string | Course)[];
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery".
+ */
+export interface Gallery {
+  id: string;
+  _order?: string | null;
+  image: string | Media;
+  caption: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  name: string;
+  /**
+   * What this person can do is defined in src/access/permissions.ts.
+   */
+  role: 'super-admin' | 'editor' | 'staff';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
     | {
-        slug: string;
-        id?: string | null;
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
       }[]
     | null;
-  message: string;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-logs".
+ */
+export interface AuditLog {
+  id: string;
+  action: 'create' | 'update' | 'delete' | 'login';
+  resourceType: 'collection' | 'global';
+  /**
+   * Collection or global slug.
+   */
+  resource: string;
+  documentId?: string | null;
+  documentTitle?: string | null;
+  changedFields?: string[] | null;
+  user?: (string | null) | User;
+  /**
+   * Kept so the entry still says who acted if the account is deleted.
+   */
+  userEmail?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -339,14 +432,6 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: string | Media;
-      } | null)
-    | ({
         relationTo: 'courses';
         value: string | Course;
       } | null)
@@ -359,12 +444,28 @@ export interface PayloadLockedDocument {
         value: string | Service;
       } | null)
     | ({
-        relationTo: 'gallery';
-        value: string | Gallery;
+        relationTo: 'testimonials';
+        value: string | Testimonial;
       } | null)
     | ({
         relationTo: 'contact-submissions';
         value: string | ContactSubmission;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'gallery';
+        value: string | Gallery;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
+        relationTo: 'audit-logs';
+        value: string | AuditLog;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -410,26 +511,108 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "courses_select".
  */
-export interface UsersSelect<T extends boolean = true> {
-  name?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
+export interface CoursesSelect<T extends boolean = true> {
+  _order?: T;
+  title?: T;
+  slug?: T;
+  accent?: T;
+  level?: T;
+  summary?: T;
+  image?: T;
+  imageCaption?: T;
+  duration?: T;
+  classSize?: T;
+  nextIntake?: T;
+  location?: T;
+  schedule?: T;
+  price?: T;
+  promotionPrice?: T;
+  syllabus?:
     | T
     | {
+        title?: T;
+        description?: T;
         id?: T;
-        createdAt?: T;
-        expiresAt?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "staff_select".
+ */
+export interface StaffSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  shortName?: T;
+  slug?: T;
+  role?: T;
+  note?: T;
+  image?: T;
+  quote?: T;
+  bio?:
+    | T
+    | {
+        paragraph?: T;
+        id?: T;
+      };
+  teachingFocus?: T;
+  specialties?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  favoritePour?: T;
+  achievements?:
+    | T
+    | {
+        year?: T;
+        title?: T;
+        organization?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  _order?: T;
+  title?: T;
+  label?: T;
+  copy?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  _order?: T;
+  quote?: T;
+  author?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  courses?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -475,89 +658,10 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses_select".
- */
-export interface CoursesSelect<T extends boolean = true> {
-  slug?: T;
-  index?: T;
-  title?: T;
-  level?: T;
-  duration?: T;
-  price?: T;
-  promotionPrice?: T;
-  classSize?: T;
-  nextIntake?: T;
-  schedule?: T;
-  location?: T;
-  summary?: T;
-  image?: T;
-  imageAlt?: T;
-  imageCaption?: T;
-  tone?: T;
-  syllabus?:
-    | T
-    | {
-        item?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "staff_select".
- */
-export interface StaffSelect<T extends boolean = true> {
-  slug?: T;
-  name?: T;
-  shortName?: T;
-  role?: T;
-  note?: T;
-  image?: T;
-  bio?:
-    | T
-    | {
-        paragraph?: T;
-        id?: T;
-      };
-  quote?: T;
-  specialties?:
-    | T
-    | {
-        item?: T;
-        id?: T;
-      };
-  teachingFocus?: T;
-  favoritePour?: T;
-  achievements?:
-    | T
-    | {
-        year?: T;
-        title?: T;
-        organization?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services_select".
- */
-export interface ServicesSelect<T extends boolean = true> {
-  number?: T;
-  title?: T;
-  label?: T;
-  copy?: T;
-  image?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "gallery_select".
  */
 export interface GallerySelect<T extends boolean = true> {
+  _order?: T;
   image?: T;
   caption?: T;
   updatedAt?: T;
@@ -565,18 +669,41 @@ export interface GallerySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-submissions_select".
+ * via the `definition` "users_select".
  */
-export interface ContactSubmissionsSelect<T extends boolean = true> {
+export interface UsersSelect<T extends boolean = true> {
   name?: T;
-  phone?: T;
-  courses?:
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
     | T
     | {
-        slug?: T;
         id?: T;
+        createdAt?: T;
+        expiresAt?: T;
       };
-  message?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-logs_select".
+ */
+export interface AuditLogsSelect<T extends boolean = true> {
+  action?: T;
+  resourceType?: T;
+  resource?: T;
+  documentId?: T;
+  documentTitle?: T;
+  changedFields?: T;
+  user?: T;
+  userEmail?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -622,87 +749,151 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings".
+ * via the `definition` "home-page".
  */
-export interface SiteSetting {
+export interface HomePage {
   id: string;
+  hero: {
+    kickerLeft: string;
+    kickerRight: string;
+    /**
+     * First line, e.g. LEARN THE
+     */
+    titleLineOne: string;
+    /**
+     * Second line, e.g. SKILL.
+     */
+    titleWord: string;
+    /**
+     * Highlighted word on the second line, e.g. MASTER
+     */
+    titleEmphasis: string;
+    /**
+     * Last line, e.g. THE MIX.
+     */
+    titleLineThree: string;
+    summary: string;
+    /**
+     * Links to the courses page.
+     */
+    buttonLabel: string;
+    imageLeft: string | Media;
+    imageRight: string | Media;
+    /**
+     * Text inside the star sticker. One word per line.
+     */
+    burst: string;
+    /**
+     * Handwritten note beside the photos. One line per row.
+     */
+    note: string;
+  };
   /**
-   * Optional notification shown above the main navigation.
+   * Scrolling text band. Separate phrases with " / ".
    */
-  announcementBar: {
+  marquee: string;
+  manifesto: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    image: string | Media;
     /**
-     * Show or hide the top bar.
+     * Round stamp on the photo. One word per line.
      */
-    enabled?: boolean | null;
-    message: string;
+    stamp: string;
     /**
-     * Optional link text.
+     * Links to the about page.
      */
-    linkLabel?: string | null;
-    /**
-     * Optional internal path or full URL.
-     */
-    linkHref?: string | null;
+    linkLabel: string;
   };
-  navigation?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  footer: {
-    tagline: string;
-    address: string;
-    email: string;
-    phone: string;
-    headline: string;
-    ctaLabel: string;
-    addressLabel: string;
-    contactLabel: string;
-    linksLabel: string;
-    copyright: string;
-    links?:
-      | {
-          label: string;
-          href: string;
-          id?: string | null;
-        }[]
-      | null;
+  featuredInstructor: {
+    eyebrow: string;
+    title: string;
+    person: string | Staff;
+    linkLabel: string;
   };
-  theme: {
-    background: string;
-    foreground: string;
-    accent: string;
-    cobalt: string;
-    acid: string;
+  /**
+   * Lists every course, in the order set under Courses.
+   */
+  featuredCourses: {
+    eyebrow: string;
+    title: string;
+    linkLabel: string;
+  };
+  /**
+   * Quotes are managed in the Testimonials collection.
+   */
+  testimonials: {
+    eyebrow: string;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-content".
+ * via the `definition` "about-page".
  */
-export interface SiteContent {
+export interface AboutPage {
   id: string;
-  pageIntros?:
-    | {
-        page: 'about' | 'staffs' | 'services' | 'courses' | 'gallery' | 'contact';
-        index: string;
-        eyebrow: string;
-        title: string;
-        intro: string;
-        accent?: ('coral' | 'cobalt') | null;
-        id?: string | null;
-      }[]
-    | null;
-  marquees: {
-    home: string;
-    about: string;
-    courses: string;
+  intro: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    accent: 'coral' | 'cobalt';
   };
-  courseFaq: {
+  story: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    imageOne: string | Media;
+    imageTwo: string | Media;
+    imageOneCaption: string;
+    /**
+     * Star sticker text. One line per row.
+     */
+    stamp: string;
+  };
+  /**
+   * Scrolling text band. Separate phrases with " / ".
+   */
+  marquee: string;
+  values: {
+    title: string;
+    items?:
+      | {
+          title: string;
+          copy: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-page".
+ */
+export interface CoursesPage {
+  id: string;
+  intro: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    accent: 'coral' | 'cobalt';
+  };
+  catalog: {
+    viewCourseLabel: string;
+    /**
+     * Small line under the duration on each course sticker.
+     */
+    stickerLabel: string;
+  };
+  /**
+   * Scrolling text band. Separate phrases with " / ".
+   */
+  marquee: string;
+  faq: {
     eyebrow: string;
     title: string;
     items?:
@@ -713,18 +904,12 @@ export interface SiteContent {
         }[]
       | null;
   };
-  courseHelp: {
+  help: {
     eyebrow: string;
     title: string;
     linkLabel: string;
   };
-  staffNote: {
-    eyebrow: string;
-    title: string;
-    copy: string;
-    linkLabel: string;
-  };
-  courseDetail: {
+  detail: {
     backLabel: string;
     durationLabel: string;
     tuitionLabel: string;
@@ -733,127 +918,571 @@ export interface SiteContent {
     syllabusEyebrow: string;
     syllabusTitle: string;
     syllabusCopy: string;
-    firstLessonCopy: string;
-    lessonCopy: string;
     intakeLabel: string;
   };
-  staffDetail: {
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-page".
+ */
+export interface TeamPage {
+  id: string;
+  intro: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    accent: 'coral' | 'cobalt';
+  };
+  /**
+   * Shown before the first name on each card, e.g. "Meet".
+   */
+  cardLinkLabel: string;
+  note: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    linkLabel: string;
+  };
+  profile: {
     backLabel: string;
     profileLabel: string;
+    /**
+     * One line per row.
+     */
     stamp: string;
     bioLabel: string;
     achievementsEyebrow: string;
     achievementsTitle: string;
     practiceEyebrow: string;
+    /**
+     * Use {name} for the instructor’s first name.
+     */
     practiceTitle: string;
     offDutyLabel: string;
     favoritePourLabel: string;
     nextLabel: string;
   };
-  featuredInstructor: {
-    eyebrow: string;
-    title: string;
-    /**
-     * Choose the instructor shown on the homepage.
-     */
-    person?: (string | null) | Staff;
-    linkLabel: string;
-  };
-  featuredCourses: {
-    eyebrow: string;
-    title: string;
-    linkLabel: string;
-  };
-  homeHero: {
-    kickerLeft: string;
-    kickerRight: string;
-    titleLineOne: string;
-    titleWord: string;
-    titleEmphasis: string;
-    titleLineThree: string;
-    summary: string;
-    buttonLabel: string;
-    imageLeft: string | Media;
-    imageRight: string | Media;
-    burstTop: string;
-    burstBottom: string;
-    noteLineOne: string;
-    noteLineTwo: string;
-  };
-  homeManifesto: {
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page".
+ */
+export interface ServicesPage {
+  id: string;
+  intro: {
     eyebrow: string;
     title: string;
     copy: string;
-    image: string | Media;
-    stampTop: string;
-    stampBottom: string;
+    accent: 'coral' | 'cobalt';
   };
   /**
-   * Ten short testimonials displayed in the homepage carousel.
+   * Button under each service. Links to the contact page.
    */
-  homeTestimonials?:
-    | {
-        quote: string;
-        author: string;
-        role: string;
-        id?: string | null;
-      }[]
-    | null;
-  entryPopup: {
-    /**
-     * Turn the website entry popup on or off.
-     */
-    enabled?: boolean | null;
+  itemLinkLabel: string;
+  /**
+   * The email shown here comes from Site settings → Contact.
+   */
+  banner: {
     eyebrow: string;
     title: string;
-    copy: string;
-    image?: (string | null) | Media;
-    ctaLabel: string;
-    ctaHref: string;
-    dismissLabel: string;
-  };
-  story: {
-    eyebrow: string;
-    title: string;
-    copy: string;
-    imageOne: string | Media;
-    imageOneAlt: string;
-    imageOneCaption: string;
-    imageTwo: string | Media;
-    imageTwoAlt: string;
-    stampTop: string;
-    stampBottom: string;
-  };
-  aboutValues?:
-    | {
-        number: string;
-        title: string;
-        copy: string;
-        id?: string | null;
-      }[]
-    | null;
-  contactDetails?:
-    | {
-        number: string;
-        title: string;
-        href: string;
-        linkText: string;
-        copy: string;
-        id?: string | null;
-      }[]
-    | null;
-  servicesBanner: {
-    eyebrow: string;
-    title: string;
-    email: string;
-  };
-  gallerySocial: {
-    copy: string;
-    handle: string;
-    href: string;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-page".
+ */
+export interface GalleryPage {
+  id: string;
+  intro: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    accent: 'coral' | 'cobalt';
+  };
+  /**
+   * Large scribbled words over the photo wall. One line per row.
+   */
+  graffiti: string;
+  /**
+   * The handle and link come from Site settings → Social.
+   */
+  social: {
+    copy: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: string;
+  intro: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    accent: 'coral' | 'cobalt';
+  };
+  /**
+   * Address, email, phone and hours come from Site settings → Contact.
+   */
+  panels: {
+    visitTitle: string;
+    visitLinkLabel: string;
+    emailTitle: string;
+    emailNote: string;
+    phoneTitle: string;
+  };
+  form: {
+    eyebrow: string;
+    title: string;
+    nameLabel: string;
+    phoneLabel: string;
+    coursesLabel: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    submitLabel: string;
+    successTitle: string;
+    successCopy: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: string;
+  /**
+   * Optional notice shown above the main navigation.
+   */
+  announcementBar: {
+    enabled?: boolean | null;
+    message: string;
+    linkLabel?: string | null;
+    linkHref?: string | null;
+  };
+  /**
+   * Main menu. The order also numbers each page’s introduction.
+   */
+  navigation?:
+    | {
+        label: string;
+        /**
+         * Internal path such as /courses, or a full URL.
+         */
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  headerCta: {
+    label: string;
+    /**
+     * Internal path such as /courses, or a full URL.
+     */
+    href: string;
+    id?: string | null;
+  };
+  contact: {
+    /**
+     * One line per row.
+     */
+    address: string;
+    /**
+     * Google Maps link for the address.
+     */
+    mapUrl: string;
+    email: string;
+    phone: string;
+    /**
+     * Opening hours. One line per row.
+     */
+    hours: string;
+  };
+  social: {
+    /**
+     * For example @skillandmix.
+     */
+    handle: string;
+    url: string;
+  };
+  /**
+   * Footer links reuse the main navigation.
+   */
+  footer: {
+    tagline: string;
+    headline: string;
+    ctaLabel: string;
+    addressLabel: string;
+    contactLabel: string;
+    linksLabel: string;
+    copyright: string;
+  };
+  seo: {
+    siteName: string;
+    /**
+     * Default description for search results and link previews.
+     */
+    description: string;
+    shareImage: string | Media;
+  };
+  /**
+   * Brand colours used across the whole website.
+   */
+  theme: {
+    /**
+     * Hex colour, for example #F25C3B.
+     */
+    paper: string;
+    /**
+     * Hex colour, for example #F25C3B.
+     */
+    ink: string;
+    /**
+     * Hex colour, for example #F25C3B.
+     */
+    coral: string;
+    /**
+     * Hex colour, for example #F25C3B.
+     */
+    cobalt: string;
+    /**
+     * Hex colour, for example #F25C3B.
+     */
+    acid: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "entry-popup".
+ */
+export interface EntryPopup {
+  id: string;
+  /**
+   * Show the popup once when a visitor arrives.
+   */
+  enabled?: boolean | null;
+  /**
+   * Text on the close-for-now button.
+   */
+  dismissLabel: string;
+  /**
+   * Only active slides are shown, in this order.
+   */
+  slides?:
+    | {
+        active?: boolean | null;
+        displayMode: 'image' | 'video';
+        eyebrow?: string | null;
+        /**
+         * For video slides this is read aloud to screen readers.
+         */
+        title: string;
+        copy?: string | null;
+        image?: (string | null) | Media;
+        ctaLabel?: string | null;
+        ctaHref?: string | null;
+        /**
+         * Public YouTube, TikTok, Facebook or Instagram video link.
+         */
+        videoUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        kickerLeft?: T;
+        kickerRight?: T;
+        titleLineOne?: T;
+        titleWord?: T;
+        titleEmphasis?: T;
+        titleLineThree?: T;
+        summary?: T;
+        buttonLabel?: T;
+        imageLeft?: T;
+        imageRight?: T;
+        burst?: T;
+        note?: T;
+      };
+  marquee?: T;
+  manifesto?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        image?: T;
+        stamp?: T;
+        linkLabel?: T;
+      };
+  featuredInstructor?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        person?: T;
+        linkLabel?: T;
+      };
+  featuredCourses?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        linkLabel?: T;
+      };
+  testimonials?:
+    | T
+    | {
+        eyebrow?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  story?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        imageOne?: T;
+        imageTwo?: T;
+        imageOneCaption?: T;
+        stamp?: T;
+      };
+  marquee?: T;
+  values?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              copy?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-page_select".
+ */
+export interface CoursesPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  catalog?:
+    | T
+    | {
+        viewCourseLabel?: T;
+        stickerLabel?: T;
+      };
+  marquee?: T;
+  faq?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  help?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        linkLabel?: T;
+      };
+  detail?:
+    | T
+    | {
+        backLabel?: T;
+        durationLabel?: T;
+        tuitionLabel?: T;
+        classSizeLabel?: T;
+        reserveLabel?: T;
+        syllabusEyebrow?: T;
+        syllabusTitle?: T;
+        syllabusCopy?: T;
+        intakeLabel?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-page_select".
+ */
+export interface TeamPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  cardLinkLabel?: T;
+  note?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        linkLabel?: T;
+      };
+  profile?:
+    | T
+    | {
+        backLabel?: T;
+        profileLabel?: T;
+        stamp?: T;
+        bioLabel?: T;
+        achievementsEyebrow?: T;
+        achievementsTitle?: T;
+        practiceEyebrow?: T;
+        practiceTitle?: T;
+        offDutyLabel?: T;
+        favoritePourLabel?: T;
+        nextLabel?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page_select".
+ */
+export interface ServicesPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  itemLinkLabel?: T;
+  banner?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-page_select".
+ */
+export interface GalleryPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  graffiti?: T;
+  social?:
+    | T
+    | {
+        copy?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  panels?:
+    | T
+    | {
+        visitTitle?: T;
+        visitLinkLabel?: T;
+        emailTitle?: T;
+        emailNote?: T;
+        phoneTitle?: T;
+      };
+  form?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        nameLabel?: T;
+        phoneLabel?: T;
+        coursesLabel?: T;
+        messageLabel?: T;
+        messagePlaceholder?: T;
+        submitLabel?: T;
+        successTitle?: T;
+        successCopy?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -875,33 +1504,52 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
+  headerCta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  contact?:
+    | T
+    | {
+        address?: T;
+        mapUrl?: T;
+        email?: T;
+        phone?: T;
+        hours?: T;
+      };
+  social?:
+    | T
+    | {
+        handle?: T;
+        url?: T;
+      };
   footer?:
     | T
     | {
         tagline?: T;
-        address?: T;
-        email?: T;
-        phone?: T;
         headline?: T;
         ctaLabel?: T;
         addressLabel?: T;
         contactLabel?: T;
         linksLabel?: T;
         copyright?: T;
-        links?:
-          | T
-          | {
-              label?: T;
-              href?: T;
-              id?: T;
-            };
+      };
+  seo?:
+    | T
+    | {
+        siteName?: T;
+        description?: T;
+        shareImage?: T;
       };
   theme?:
     | T
     | {
-        background?: T;
-        foreground?: T;
-        accent?: T;
+        paper?: T;
+        ink?: T;
+        coral?: T;
         cobalt?: T;
         acid?: T;
       };
@@ -911,193 +1559,24 @@ export interface SiteSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-content_select".
+ * via the `definition` "entry-popup_select".
  */
-export interface SiteContentSelect<T extends boolean = true> {
-  pageIntros?:
+export interface EntryPopupSelect<T extends boolean = true> {
+  enabled?: T;
+  dismissLabel?: T;
+  slides?:
     | T
     | {
-        page?: T;
-        index?: T;
-        eyebrow?: T;
-        title?: T;
-        intro?: T;
-        accent?: T;
-        id?: T;
-      };
-  marquees?:
-    | T
-    | {
-        home?: T;
-        about?: T;
-        courses?: T;
-      };
-  courseFaq?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        items?:
-          | T
-          | {
-              question?: T;
-              answer?: T;
-              id?: T;
-            };
-      };
-  courseHelp?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        linkLabel?: T;
-      };
-  staffNote?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        copy?: T;
-        linkLabel?: T;
-      };
-  courseDetail?:
-    | T
-    | {
-        backLabel?: T;
-        durationLabel?: T;
-        tuitionLabel?: T;
-        classSizeLabel?: T;
-        reserveLabel?: T;
-        syllabusEyebrow?: T;
-        syllabusTitle?: T;
-        syllabusCopy?: T;
-        firstLessonCopy?: T;
-        lessonCopy?: T;
-        intakeLabel?: T;
-      };
-  staffDetail?:
-    | T
-    | {
-        backLabel?: T;
-        profileLabel?: T;
-        stamp?: T;
-        bioLabel?: T;
-        achievementsEyebrow?: T;
-        achievementsTitle?: T;
-        practiceEyebrow?: T;
-        practiceTitle?: T;
-        offDutyLabel?: T;
-        favoritePourLabel?: T;
-        nextLabel?: T;
-      };
-  featuredInstructor?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        person?: T;
-        linkLabel?: T;
-      };
-  featuredCourses?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        linkLabel?: T;
-      };
-  homeHero?:
-    | T
-    | {
-        kickerLeft?: T;
-        kickerRight?: T;
-        titleLineOne?: T;
-        titleWord?: T;
-        titleEmphasis?: T;
-        titleLineThree?: T;
-        summary?: T;
-        buttonLabel?: T;
-        imageLeft?: T;
-        imageRight?: T;
-        burstTop?: T;
-        burstBottom?: T;
-        noteLineOne?: T;
-        noteLineTwo?: T;
-      };
-  homeManifesto?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        copy?: T;
-        image?: T;
-        stampTop?: T;
-        stampBottom?: T;
-      };
-  homeTestimonials?:
-    | T
-    | {
-        quote?: T;
-        author?: T;
-        role?: T;
-        id?: T;
-      };
-  entryPopup?:
-    | T
-    | {
-        enabled?: T;
+        active?: T;
+        displayMode?: T;
         eyebrow?: T;
         title?: T;
         copy?: T;
         image?: T;
         ctaLabel?: T;
         ctaHref?: T;
-        dismissLabel?: T;
-      };
-  story?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        copy?: T;
-        imageOne?: T;
-        imageOneAlt?: T;
-        imageOneCaption?: T;
-        imageTwo?: T;
-        imageTwoAlt?: T;
-        stampTop?: T;
-        stampBottom?: T;
-      };
-  aboutValues?:
-    | T
-    | {
-        number?: T;
-        title?: T;
-        copy?: T;
+        videoUrl?: T;
         id?: T;
-      };
-  contactDetails?:
-    | T
-    | {
-        number?: T;
-        title?: T;
-        href?: T;
-        linkText?: T;
-        copy?: T;
-        id?: T;
-      };
-  servicesBanner?:
-    | T
-    | {
-        eyebrow?: T;
-        title?: T;
-        email?: T;
-      };
-  gallerySocial?:
-    | T
-    | {
-        copy?: T;
-        handle?: T;
-        href?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -1,16 +1,15 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+
+import { collectionAccess } from '@/access'
+import { auditCollection } from '@/hooks/audit'
 
 export const Gallery: CollectionConfig = {
   slug: 'gallery',
-  admin: { useAsTitle: 'caption' },
-  access: {
-    read: anyone,
-    create: authenticated,
-    update: authenticated,
-    delete: authenticated,
-  },
+  labels: { singular: 'Gallery photo', plural: 'Gallery' },
+  access: collectionAccess('gallery'),
+  admin: { defaultColumns: ['caption', 'image'], group: 'Library', useAsTitle: 'caption' },
+  hooks: auditCollection('gallery', 'caption'),
+  orderable: true,
   fields: [
     { name: 'image', type: 'upload', relationTo: 'media', required: true },
     { name: 'caption', type: 'text', required: true },

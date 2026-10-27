@@ -1,16 +1,13 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+
+import { collectionAccess } from '@/access'
+import { auditCollection } from '@/hooks/audit'
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  access: {
-    read: anyone,
-    create: authenticated,
-    update: authenticated,
-    delete: authenticated,
-  },
-  admin: { useAsTitle: 'alt' },
+  access: collectionAccess('media'),
+  admin: { group: 'Library', useAsTitle: 'alt' },
+  hooks: auditCollection('media', 'alt'),
   upload: {
     staticDir: 'media',
     mimeTypes: ['image/*'],
@@ -20,6 +17,15 @@ export const Media: CollectionConfig = {
     ],
   },
   fields: [
-    { name: 'alt', type: 'text', required: true },
+    {
+      name: 'alt',
+      label: 'Image description',
+      type: 'text',
+      required: true,
+      admin: {
+        description:
+          'Describes the image for screen readers and search engines. Used everywhere the image appears.',
+      },
+    },
   ],
 }

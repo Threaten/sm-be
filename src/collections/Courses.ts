@@ -1,51 +1,101 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+
+import { collectionAccess } from '@/access'
+import { accentField } from '@/fields/accent'
+import { slugField } from '@/fields/slug'
+import { auditCollection } from '@/hooks/audit'
 
 export const Courses: CollectionConfig = {
   slug: 'courses',
-  admin: { useAsTitle: 'title' },
-  access: {
-    read: anyone,
-    create: authenticated,
-    update: authenticated,
-    delete: authenticated,
+  access: collectionAccess('courses'),
+  admin: {
+    defaultColumns: ['title', 'level', 'duration', 'price'],
+    description: 'Shown on the website in this order. Course numbers are added automatically.',
+    group: 'Academy',
+    useAsTitle: 'title',
   },
+  hooks: auditCollection('courses', 'title'),
+  orderable: true,
   fields: [
-    { name: 'slug', type: 'text', required: true, unique: true },
-    { name: 'index', type: 'text', required: true },
     { name: 'title', type: 'text', required: true },
-    { name: 'level', type: 'text', required: true },
-    { name: 'duration', type: 'text', required: true },
+    slugField('title'),
+    { ...accentField(), admin: { position: 'sidebar', description: 'Colour used for this course.' } },
     {
-      name: 'price',
-      label: 'Regular price',
-      type: 'text',
-      required: true,
-      admin: { description: 'The standard course price, for example: 8.000.000₫' },
-    },
-    {
-      name: 'promotionPrice',
-      label: 'Promotion price',
-      type: 'text',
-      admin: {
-        description:
-          'Optional. When set, this is highlighted on the website and the regular price is crossed out.',
-      },
-    },
-    { name: 'classSize', type: 'text', required: true, defaultValue: '12 students' },
-    { name: 'nextIntake', type: 'text', required: true, defaultValue: 'September 14' },
-    { name: 'schedule', type: 'textarea', required: true, defaultValue: 'Tuesday evenings\n6:30 to 9:00' },
-    { name: 'location', type: 'text', required: true, defaultValue: 'Ho Chi Minh City' },
-    { name: 'summary', type: 'textarea', required: true },
-    { name: 'image', type: 'upload', relationTo: 'media', required: true },
-    { name: 'imageAlt', type: 'text', required: true, defaultValue: 'Cocktail class in progress' },
-    { name: 'imageCaption', type: 'text', required: true, defaultValue: 'Skill & Mix / Ho Chi Minh City' },
-    { name: 'tone', type: 'text', required: true },
-    {
-      name: 'syllabus',
-      type: 'array',
-      fields: [{ name: 'item', type: 'text', required: true }],
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Overview',
+          fields: [
+            {
+              name: 'level',
+              type: 'text',
+              required: true,
+              admin: { description: 'Who the course is for.' },
+            },
+            { name: 'summary', type: 'textarea', required: true },
+            { name: 'image', type: 'upload', relationTo: 'media', required: true },
+            { name: 'imageCaption', type: 'text', required: true },
+          ],
+        },
+        {
+          label: 'Schedule & tuition',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                { name: 'duration', type: 'text', required: true },
+                { name: 'classSize', type: 'text', required: true },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                { name: 'nextIntake', type: 'text', required: true },
+                { name: 'location', type: 'text', required: true },
+              ],
+            },
+            {
+              name: 'schedule',
+              type: 'textarea',
+              required: true,
+              admin: { description: 'One line per row.' },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'price',
+                  label: 'Regular price',
+                  type: 'text',
+                  required: true,
+                  admin: { description: 'For example 8000000, or "Liên hệ".' },
+                },
+                {
+                  name: 'promotionPrice',
+                  label: 'Promotion price',
+                  type: 'text',
+                  admin: { description: 'Optional. When set, the regular price is crossed out.' },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Syllabus',
+          fields: [
+            {
+              name: 'syllabus',
+              type: 'array',
+              minRows: 1,
+              admin: { initCollapsed: true },
+              fields: [
+                { name: 'title', type: 'text', required: true },
+                { name: 'description', type: 'textarea', required: true },
+              ],
+            },
+          ],
+        },
+      ],
     },
   ],
 }

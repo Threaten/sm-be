@@ -1,24 +1,36 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '@/access/anyone'
-import { authenticated } from '@/access/authenticated'
+
+import { collectionAccess } from '@/access'
+import { auditCollection } from '@/hooks/audit'
 
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
-  admin: { useAsTitle: 'name' },
-  access: {
-    create: anyone,
-    read: authenticated,
-    update: authenticated,
-    delete: authenticated,
+  labels: { singular: 'Contact submission', plural: 'Contact submissions' },
+  access: collectionAccess('contact-submissions'),
+  admin: {
+    defaultColumns: ['name', 'phone', 'courses', 'createdAt'],
+    group: 'Leads',
+    useAsTitle: 'name',
   },
+  defaultSort: '-createdAt',
+  hooks: auditCollection('contact-submissions', 'name'),
   fields: [
-    { name: 'name', type: 'text', required: true },
-    { name: 'phone', type: 'text', required: true },
+    {
+      type: 'row',
+      fields: [
+        { name: 'name', type: 'text', required: true },
+        { name: 'phone', type: 'text', required: true },
+      ],
+    },
     {
       name: 'courses',
-      type: 'array',
-      fields: [{ name: 'slug', type: 'text', required: true }],
+      type: 'relationship',
+      relationTo: 'courses',
+      hasMany: true,
+      required: true,
+      minRows: 1,
     },
     { name: 'message', type: 'textarea', required: true },
   ],
+  timestamps: true,
 }

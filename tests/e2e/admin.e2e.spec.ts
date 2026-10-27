@@ -32,9 +32,9 @@ test.describe('Admin Panel', () => {
     await expect(listViewArtifact).toBeVisible()
   })
 
-  test('can edit site content', async () => {
-    await page.goto('http://localhost:3002/admin/globals/site-content')
-    await expect(page).toHaveURL('http://localhost:3002/admin/globals/site-content')
+  test('can edit a page global', async () => {
+    await page.goto('http://localhost:3002/admin/globals/home-page')
+    await expect(page).toHaveURL('http://localhost:3002/admin/globals/home-page')
     await expect(page.locator('form').first()).toBeVisible()
   })
 })
