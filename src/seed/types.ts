@@ -4,14 +4,14 @@
  */
 
 export type Image = { url: string; alt: string };
-export type Accent = "coral" | "cobalt" | "acid";
+export type Accent = "red" | "black";
 export type Link = { label: string; href: string };
 
 export type PageIntro = {
   eyebrow: string;
   title: string;
   copy: string;
-  accent: "coral" | "cobalt";
+  accent: Accent;
 };
 
 export type Course = {
@@ -30,7 +30,7 @@ export type Course = {
   schedule: string;
   price: string;
   promotionPrice?: string | null;
-  syllabus: { title: string; description: string }[];
+  syllabus: { title: string; description?: string | null }[];
 };
 
 export type StaffMember = {
@@ -68,7 +68,7 @@ export type SiteSettings = {
     copyright: string;
   };
   seo: { siteName: string; description: string; shareImage: Image };
-  theme: { paper: string; ink: string; coral: string; cobalt: string; acid: string };
+  theme: { white: string; black: string; red: string };
 };
 
 export type HomePage = {

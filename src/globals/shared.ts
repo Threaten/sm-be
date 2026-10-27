@@ -1,6 +1,7 @@
 import type { Field, GlobalConfig } from 'payload'
 
 import { globalAccess } from '@/access'
+import { accentField } from '@/fields/accent'
 import type { PermissionGlobalSlug } from '@/access/permissions'
 import { auditGlobal } from '@/hooks/audit'
 
@@ -13,16 +14,7 @@ export const pageIntroField: Field = {
     { name: 'eyebrow', type: 'text', required: true },
     { name: 'title', type: 'text', required: true },
     { name: 'copy', type: 'textarea', required: true },
-    {
-      name: 'accent',
-      type: 'select',
-      required: true,
-      defaultValue: 'coral',
-      options: [
-        { label: 'Coral', value: 'coral' },
-        { label: 'Cobalt', value: 'cobalt' },
-      ],
-    },
+    accentField(),
   ],
 }
 

@@ -21,20 +21,18 @@ const stripArrow = (value?: string) => value?.replace(/\s*↗\s*$/, '')
 const idOf = (value: unknown) =>
   value && typeof value === 'object' && '_id' in value ? String((value as Doc)._id) : value ? String(value) : undefined
 
-const ACCENTS: Record<string, 'coral' | 'cobalt' | 'acid'> = {
-  'var(--accent)': 'coral',
-  'var(--coral)': 'coral',
-  'var(--pink)': 'coral',
-  'var(--orange)': 'coral',
-  'var(--cobalt)': 'cobalt',
-  'var(--blue)': 'cobalt',
-  'var(--acid)': 'acid',
-  'var(--lime)': 'acid',
+/** The site is black, white and red only: old blue tones become black, everything else red. */
+const ACCENTS: Record<string, 'red' | 'black'> = {
+  'var(--cobalt)': 'black',
+  'var(--blue)': 'black',
 }
+const toAccent = (old?: string) => (old && ACCENTS[old]) ?? 'red'
 
 const intro = (intros: Doc[] | undefined, page: string, base: Doc) => {
   const old = intros?.find((item) => item.page === page)
-  return old ? { eyebrow: old.eyebrow, title: old.title, copy: old.intro, accent: old.accent ?? 'coral' } : base
+  return old
+    ? { eyebrow: old.eyebrow, title: old.title, copy: old.intro, accent: old.accent === 'cobalt' ? 'black' : 'red' }
+    : base
 }
 
 async function migrate() {
@@ -45,10 +43,6 @@ async function migrate() {
   const globalsCollection = db.collection('globals')
   const oldContent = (await globalsCollection.findOne({ globalType: 'site-content' })) as Doc | null
   const oldSettings = ((await globalsCollection.findOne({ globalType: 'site-settings' })) ?? {}) as Doc
-  const lessonCopy = {
-    first: oldContent?.courseDetail?.firstLessonCopy ?? fallback.courses[0].syllabus[0].description,
-    rest: oldContent?.courseDetail?.lessonCopy ?? fallback.courses[0].syllabus[1].description,
-  }
 
   /* Users: everyone who could log in before had full access. */
   const users = await db.collection('users').updateMany({ role: { $exists: false } }, { $set: { role: 'super-admin' } })
@@ -57,12 +51,12 @@ async function migrate() {
   /* Courses */
   for (const course of await db.collection('courses').find().sort({ createdAt: 1 }).toArray()) {
     const set: Doc = {}
-    if (!course.accent) set.accent = ACCENTS[course.tone] ?? 'coral'
+    if (!['red', 'black'].includes(course.accent)) set.accent = toAccent(course.tone)
     if (Array.isArray(course.syllabus) && course.syllabus.some((item: Doc) => 'item' in item)) {
-      set.syllabus = course.syllabus.map((item: Doc, index: number) => ({
+      set.syllabus = course.syllabus.map((item: Doc) => ({
         id: item.id,
         title: item.title ?? item.item,
-        description: item.description ?? (index === 0 ? lessonCopy.first : lessonCopy.rest),
+        ...(item.description ? { description: item.description } : {}),
       }))
     }
     if (course.imageAlt && course.image) {
@@ -72,7 +66,7 @@ async function migrate() {
       .collection('courses')
       .updateOne({ _id: course._id }, { $set: set, $unset: { index: '', imageAlt: '', tone: '' } })
   }
-  log('courses: accent, syllabus descriptions, image alt text moved to Media')
+  log('courses: accent, syllabus titles, image alt text moved to Media')
 
   await db.collection('services').updateMany({}, { $unset: { number: '' } })
 
@@ -121,8 +115,6 @@ async function migrate() {
   const firstStaff = await db.collection('staffs').findOne({}, { sort: { createdAt: 1 } })
   const contactPanels = (c.contactDetails ?? []) as Doc[]
   const [visit, email, phone] = contactPanels
-  const theme = oldSettings.theme ?? {}
-  const isHex = (value: unknown) => typeof value === 'string' && /^#[0-9a-f]{3,6}$/i.test(value)
 
   const popupSlides: Doc[] = []
   if (c.entryPopup?.title) {
@@ -172,13 +164,7 @@ async function migrate() {
       },
       footer: { ...fallback.siteSettings.footer, ...oldSettings.footer },
       seo: { ...fallback.siteSettings.seo, shareImage: idOf(c.homeHero?.imageLeft) },
-      theme: {
-        paper: isHex(theme.background) ? theme.background : fallback.siteSettings.theme.paper,
-        ink: isHex(theme.foreground) ? theme.foreground : fallback.siteSettings.theme.ink,
-        coral: isHex(theme.accent) ? theme.accent : fallback.siteSettings.theme.coral,
-        cobalt: isHex(theme.cobalt) ? theme.cobalt : fallback.siteSettings.theme.cobalt,
-        acid: isHex(theme.acid) ? theme.acid : fallback.siteSettings.theme.acid,
-      },
+      theme: fallback.siteSettings.theme,
     },
     'home-page': {
       hero: {
@@ -275,6 +261,8 @@ async function migrate() {
         'theme.background': '',
         'theme.foreground': '',
         'theme.accent': '',
+        'theme.cobalt': '',
+        'theme.acid': '',
       },
     },
   )

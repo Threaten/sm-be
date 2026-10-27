@@ -36,7 +36,7 @@ derives every "01, 02…" number from position, so there are no hand-typed numbe
 | --- | --- | --- |
 | title | text | everywhere |
 | slug | text, unique, auto from title | URLs, `?course=` prefill |
-| accent | coral \| cobalt \| acid | catalog block, detail hero, list hover, form chip |
+| accent | red \| black | catalog block, detail hero, list hover, form chip |
 | level | text | catalog label, detail hero, home list |
 | summary | textarea | catalog, detail hero, page meta description |
 | image → media | upload | catalog, detail hero, home list (alt from Media) |
@@ -45,7 +45,7 @@ derives every "01, 02…" number from position, so there are no hand-typed numbe
 | nextIntake, location | text | catalog spec, enrol strip |
 | schedule | textarea (lines) | enrol strip |
 | price, promotionPrice? | text | everywhere a price shows (promo crosses out regular) |
-| syllabus[] { title, description } | array | detail syllabus accordion |
+| syllabus[] { title, description? } | array | detail syllabus (a lesson with a description opens; without one it is a plain row). `npm run update:courses` refreshes level, duration, class size and syllabus from the Website Brief sheet |
 
 **staff** (label: Instructors) · `/staffs`, `/staffs/[slug]`, home featured instructor
 | Field | Type | Used by |
@@ -87,12 +87,12 @@ image descriptions site-wide; the old per-place `imageAlt` fields were removed.
 
 ## Globals
 
-`intro` on every inner page is `{ eyebrow, title, copy, accent: coral|cobalt }`; its big number comes from the
+`intro` on every inner page is `{ eyebrow, title, copy, accent: red|black }`; its big number comes from the
 page's position in Site settings → navigation.
 
 | Global | Fields | Page |
 | --- | --- | --- |
-| **site-settings** | announcementBar { enabled, message, linkLabel?, linkHref? } · navigation[] { label, href } · headerCta { label, href } · contact { address, mapUrl, email, phone, hours } · social { handle, url } · footer { tagline, headline, ctaLabel, addressLabel, contactLabel, linksLabel, copyright } · seo { siteName, description, shareImage } · theme { paper, ink, coral, cobalt, acid } (hex) | header, footer, `<head>` meta, CSS colour variables; contact/social reused by Contact, Services, Gallery |
+| **site-settings** | announcementBar { enabled, message, linkLabel?, linkHref? } · navigation[] { label, href } · headerCta { label, href } · contact { address, mapUrl, email, phone, hours } · social { handle, url } · footer { tagline, headline, ctaLabel, addressLabel, contactLabel, linksLabel, copyright } · seo { siteName, description, shareImage } · theme { white, black, red } (hex) | header, footer, `<head>` meta, CSS colour variables; contact/social reused by Contact, Services, Gallery |
 | **home-page** | hero { kickerLeft, kickerRight, titleLineOne, titleWord, titleEmphasis, titleLineThree, summary, buttonLabel, imageLeft, imageRight, burst, note } · marquee · manifesto { eyebrow, title, copy, image, stamp, linkLabel } · featuredInstructor { eyebrow, title, person → staff, linkLabel } · featuredCourses { eyebrow, title, linkLabel } · testimonials { eyebrow } | `/` |
 | **about-page** | intro · story { eyebrow, title, copy, imageOne, imageTwo, imageOneCaption, stamp } · marquee · values { title, items[] { title, copy } } | `/about` |
 | **courses-page** | intro · catalog { viewCourseLabel, stickerLabel } · marquee · faq { eyebrow, title, items[] { question, answer } } · help { eyebrow, title, linkLabel } · detail { backLabel, durationLabel, tuitionLabel, classSizeLabel, reserveLabel, syllabusEyebrow, syllabusTitle, syllabusCopy, intakeLabel } | `/courses`, `/courses/[slug]`, home list labels |
@@ -114,11 +114,11 @@ Multi-line text fields (`burst`, `note`, `stamp`, `schedule`, `address`, `hours`
 | `homeTestimonials[]` (exactly 10) | `testimonials` collection | Any count, reorderable, own permissions. |
 | `courses.index`, `services.number`, `aboutValues[].number`, `contactDetails[].number` | removed | Numbers come from order. |
 | `courses.imageAlt`, `story.imageOneAlt/imageTwoAlt`, popup `imageAlt` | `media.alt` | One description per image. |
-| `courses.tone` (CSS string) | `courses.accent` (select) | Editors can't break styling. |
-| `syllabus[] { item }` + global `firstLessonCopy`/`lessonCopy` | `syllabus[] { title, description }` | Each lesson gets its own text. |
+| `courses.tone` (CSS string) | `courses.accent` (select: red \| black) | Editors can't break styling. |
+| `syllabus[] { item }` + global `firstLessonCopy`/`lessonCopy` | `syllabus[] { title, description? }` | Each lesson can have its own text; no shared filler. |
 | `footer.address/email/phone`, `contactDetails[]`, `servicesBanner.email`, `gallerySocial.handle/href` | `site-settings.contact` + `social` | One source of contact truth. |
 | `footer.links[]` | reuses `navigation` | Was a duplicate. |
-| `theme { background, foreground, accent, cobalt, acid }` (unused) | `theme { paper, ink, coral, cobalt, acid }` (hex) | Now actually drives the site colours. |
+| `theme { background, foreground, accent, cobalt, acid }` (unused) | `theme { white, black, red }` (hex) | The site uses only black, white and red; the theme now drives them. |
 | `entryPopup` promotion fields + `additionalSlides[]` | `slides[]` | One slide model. |
 | `homeHero.burstTop/burstBottom`, `noteLineOne/Two`, `stampTop/stampBottom` | `burst`, `note`, `stamp` (multi-line) | Fewer fields. |
 | `contact-submissions.courses[] { slug }` | relationship → courses | Real links in the admin. |

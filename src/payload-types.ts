@@ -166,9 +166,9 @@ export interface Course {
    */
   slug: string;
   /**
-   * Colour used for this course.
+   * Block colour for this course.
    */
-  accent: 'coral' | 'cobalt' | 'acid';
+  accent: 'red' | 'black';
   /**
    * Who the course is for.
    */
@@ -195,7 +195,10 @@ export interface Course {
   syllabus?:
     | {
         title: string;
-        description: string;
+        /**
+         * Optional. When set, the lesson opens to show it.
+         */
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -839,7 +842,7 @@ export interface AboutPage {
     eyebrow: string;
     title: string;
     copy: string;
-    accent: 'coral' | 'cobalt';
+    accent: 'red' | 'black';
   };
   story: {
     eyebrow: string;
@@ -880,7 +883,7 @@ export interface CoursesPage {
     eyebrow: string;
     title: string;
     copy: string;
-    accent: 'coral' | 'cobalt';
+    accent: 'red' | 'black';
   };
   catalog: {
     viewCourseLabel: string;
@@ -933,7 +936,7 @@ export interface TeamPage {
     eyebrow: string;
     title: string;
     copy: string;
-    accent: 'coral' | 'cobalt';
+    accent: 'red' | 'black';
   };
   /**
    * Shown before the first name on each card, e.g. "Meet".
@@ -977,7 +980,7 @@ export interface ServicesPage {
     eyebrow: string;
     title: string;
     copy: string;
-    accent: 'coral' | 'cobalt';
+    accent: 'red' | 'black';
   };
   /**
    * Button under each service. Links to the contact page.
@@ -1003,7 +1006,7 @@ export interface GalleryPage {
     eyebrow: string;
     title: string;
     copy: string;
-    accent: 'coral' | 'cobalt';
+    accent: 'red' | 'black';
   };
   /**
    * Large scribbled words over the photo wall. One line per row.
@@ -1028,7 +1031,7 @@ export interface ContactPage {
     eyebrow: string;
     title: string;
     copy: string;
-    accent: 'coral' | 'cobalt';
+    accent: 'red' | 'black';
   };
   /**
    * Address, email, phone and hours come from Site settings → Contact.
@@ -1135,29 +1138,21 @@ export interface SiteSetting {
     shareImage: string | Media;
   };
   /**
-   * Brand colours used across the whole website.
+   * The website uses only these three colours. Adjust the exact shades here.
    */
   theme: {
     /**
-     * Hex colour, for example #F25C3B.
+     * Hex colour, for example #D7141A.
      */
-    paper: string;
+    white: string;
     /**
-     * Hex colour, for example #F25C3B.
+     * Hex colour, for example #D7141A.
      */
-    ink: string;
+    black: string;
     /**
-     * Hex colour, for example #F25C3B.
+     * Hex colour, for example #D7141A.
      */
-    coral: string;
-    /**
-     * Hex colour, for example #F25C3B.
-     */
-    cobalt: string;
-    /**
-     * Hex colour, for example #F25C3B.
-     */
-    acid: string;
+    red: string;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1547,11 +1542,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   theme?:
     | T
     | {
-        paper?: T;
-        ink?: T;
-        coral?: T;
-        cobalt?: T;
-        acid?: T;
+        white?: T;
+        black?: T;
+        red?: T;
       };
   updatedAt?: T;
   createdAt?: T;

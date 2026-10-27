@@ -69,11 +69,9 @@ export const siteSettings: SiteSettings = {
     },
   },
   theme: {
-    paper: "#F6F0E4",
-    ink: "#1D1424",
-    coral: "#E5432A",
-    cobalt: "#2B3FD6",
-    acid: "#D7F04A",
+    white: "#FFFFFF",
+    black: "#111111",
+    red: "#D7141A",
   },
 };
 
@@ -120,7 +118,7 @@ export const aboutPage: AboutPage = {
     eyebrow: "Inside Skill & Mix",
     title: "A SCHOOL FOR THIRSTY MINDS.",
     copy: "We built the class we wished existed: practical, demanding, generous, and a little bit chaotic.",
-    accent: "coral",
+    accent: "red",
   },
   story: {
     eyebrow: "One tiny bar. One big idea.",
@@ -151,7 +149,7 @@ export const coursesPage: CoursesPage = {
     eyebrow: "Khóa học",
     title: "KHÓA HỌC BARTENDER TẠI SKILL & MIX",
     copy: "Từ nền tảng cơ bản đến những kỹ năng chuyên sâu, các khóa học tại Skill & Mix được xây dựng theo từng mục tiêu và trình độ. Học viên được tiếp cận kiến thức, thực hành kỹ năng và từng bước phát triển năng lực phù hợp với định hướng của mình.",
-    accent: "coral",
+    accent: "red",
   },
   catalog: { viewCourseLabel: "Xem khoá học", stickerLabel: "hands on" },
   marquee: "Small class / Big practice",
@@ -204,7 +202,7 @@ export const teamPage: TeamPage = {
     eyebrow: "Giảng viên",
     title: "GẶP GỠ ĐỘI NGŨ SKILL & MIX",
     copy: "Đội ngũ giảng viên của Skill & Mix là những người đang trực tiếp làm việc và tích lũy kinh nghiệm trong ngành Beverage & Hospitality. Mỗi người mang đến những góc nhìn, chuyên môn và trải nghiệm thực tế riêng trong quá trình đào tạo.",
-    accent: "cobalt",
+    accent: "black",
   },
   cardLinkLabel: "Gặp",
   note: {
@@ -233,7 +231,7 @@ export const servicesPage: ServicesPage = {
     eyebrow: "Beyond the classroom",
     title: "WE BRING THE BAR TO THE BRIEF.",
     copy: "Private workshops, sharper menus, stronger teams. Tell us what needs mixing.",
-    accent: "coral",
+    accent: "red",
   },
   itemLinkLabel: "Start a conversation",
   banner: { eyebrow: "Need something stranger?", title: "We like a brief with a little bite." },
@@ -244,7 +242,7 @@ export const galleryPage: GalleryPage = {
     eyebrow: "Inside the lab",
     title: "MESSY HANDS. CLEAN DRINKS.",
     copy: "Classes, experiments, guest shifts, bad ideas that became good ideas, and the occasional perfect lemon peel.",
-    accent: "cobalt",
+    accent: "black",
   },
   graffiti: "proof of\npractice",
   social: { copy: "More spills, drills, and questionable garnishes:" },
@@ -255,7 +253,7 @@ export const contactPage: ContactPage = {
     eyebrow: "Say hello",
     title: "QUESTIONS? GOOD.",
     copy: "Ask about a course, plan a private class, bring us a strange brief, or just come see the room.",
-    accent: "coral",
+    accent: "red",
   },
   panels: {
     visitTitle: "Come by",
@@ -334,7 +332,7 @@ export const courses: Course[] = [
     "slug": "bartender-co-ban",
     "title": "Bartender Cơ Bản",
     "level": "Người mới 100%, sinh viên, người muốn chuyển ngành",
-    "duration": "1,5–2 tháng, tùy lịch giảng viên",
+    "duration": "2 tháng (8 tuần)",
     "price": "Liên hệ",
     "classSize": "Tối đa 6 học viên/lớp",
     "nextIntake": "Liên hệ để nhận lịch gần nhất",
@@ -342,42 +340,36 @@ export const courses: Course[] = [
     "location": "TP. Hồ Chí Minh",
     "summary": "Khóa học dành cho người mới bắt đầu, giúp xây dựng kiến thức nền tảng, kỹ thuật pha chế và quy trình làm việc tại quầy bar.",
     "imageCaption": "Skill & Mix Academy · TP.HCM",
-    "accent": "coral",
+    "accent": "red",
     "image": {
       "url": "https://images.unsplash.com/photo-1436076863939-06870fe779c2?auto=format&fit=crop&w=1400&q=88",
       "alt": "Học viên thực hành pha chế tại quầy với shaker và dụng cụ bartender"
     },
     "syllabus": [
       {
-        "title": "Kiến thức nền tảng về rượu và cocktail",
-        "description": "Nắm vững nền tảng, thực hành từng bước và nhận góp ý trực tiếp từ giảng viên."
+        "title": "Kiến thức nền tảng về rượu và cocktail"
       },
       {
-        "title": "Làm quen với dụng cụ và kỹ thuật pha chế cơ bản",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Làm quen với các dụng cụ và kỹ thuật pha chế cơ bản"
       },
       {
-        "title": "Thực hành các công thức cocktail phổ biến",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Thực hành các công thức cocktail phổ biến"
       },
       {
-        "title": "Kỹ năng giao tiếp và phục vụ khách hàng",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Kỹ năng giao tiếp và phục vụ khách hàng"
       },
       {
-        "title": "Rèn luyện thao tác và quy trình tại quầy bar",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Rèn luyện thao tác và quy trình làm việc tại quầy bar"
       },
       {
-        "title": "Thực hành trong môi trường mô phỏng thực tế",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Thực hành trong môi trường mô phỏng thực tế"
       }
     ]
   },
   {
     "slug": "bartender-nang-cao",
     "title": "Bartender Nâng Cao",
-    "level": "Đã hoàn thành khóa cơ bản hoặc bartender muốn lên tay",
+    "level": "Học viên đã hoàn thành khoá cơ bản, bartender muốn lên tay",
     "duration": "6 tuần",
     "price": "Liên hệ",
     "classSize": "Lớp thực hành chuyên sâu",
@@ -386,42 +378,36 @@ export const courses: Course[] = [
     "location": "TP. Hồ Chí Minh",
     "summary": "Khóa học dành cho học viên đã có nền tảng, tập trung vào kỹ thuật nâng cao, thiết kế menu và vận hành quầy bar chuyên nghiệp.",
     "imageCaption": "Skill & Mix Academy · TP.HCM",
-    "accent": "cobalt",
+    "accent": "black",
     "image": {
       "url": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?auto=format&fit=crop&w=1400&q=88",
       "alt": "Bartender thực hành kỹ thuật nâng cao tại quầy bar"
     },
     "syllabus": [
       {
-        "title": "Kỹ thuật nâng cao: layering, infusion và smoke",
-        "description": "Nắm vững nền tảng, thực hành từng bước và nhận góp ý trực tiếp từ giảng viên."
+        "title": "Kỹ thuật nâng cao: layering, infusion, smoke"
       },
       {
-        "title": "Thiết kế menu cocktail signature",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Thiết kế menu cocktail signature"
       },
       {
-        "title": "Inventory và cost control",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Vận hành quầy bar: inventory, cost control"
       },
       {
-        "title": "Mixology và pairing",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Mixology & pairing"
       },
       {
-        "title": "Phong cách phục vụ tại bar chuyên nghiệp",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Phong cách phục vụ tại các bar chuyên nghiệp"
       },
       {
-        "title": "Thực hành tại bar đối tác của Skill & Mix",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Thực hành tại bar thực tế (đối tác Skill & Mix)"
       }
     ]
   },
   {
     "slug": "flair-bartending",
     "title": "Flair Bartending",
-    "level": "Bartender muốn nâng cao kỹ năng biểu diễn",
+    "level": "Bartender muốn nâng cao kỹ năng biểu diễn, kiểm soát dụng cụ và tạo thêm dấu ấn cá nhân trong quá trình làm việc",
     "duration": "8 buổi",
     "price": "Liên hệ",
     "classSize": "Lớp thực hành",
@@ -430,34 +416,30 @@ export const courses: Course[] = [
     "location": "TP. Hồ Chí Minh",
     "summary": "Phát triển kỹ năng biểu diễn, khả năng kiểm soát dụng cụ và dấu ấn cá nhân thông qua luyện tập liên tục.",
     "imageCaption": "Skill & Mix Academy · TP.HCM",
-    "accent": "acid",
+    "accent": "red",
     "image": {
       "url": "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?auto=format&fit=crop&w=1400&q=88",
       "alt": "Flair bartender biểu diễn và kiểm soát dụng cụ"
     },
     "syllabus": [
       {
-        "title": "Kỹ thuật Flair cơ bản và kiểm soát dụng cụ",
-        "description": "Nắm vững nền tảng, thực hành từng bước và nhận góp ý trực tiếp từ giảng viên."
+        "title": "Các kỹ thuật Flair cơ bản và cách kiểm soát dụng cụ"
       },
       {
-        "title": "Phát triển phong cách biểu diễn cá nhân",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Phát triển phong cách biểu diễn phù hợp với cá nhân"
       },
       {
-        "title": "Luyện tập theo chủ đề và mục tiêu cụ thể",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Luyện tập theo chủ đề và từng mục tiêu cụ thể"
       },
       {
-        "title": "Hoàn thiện kỹ năng qua thực hành liên tục",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Hoàn thiện kỹ năng thông qua thực hành liên tục"
       }
     ]
   },
   {
     "slug": "bar-skill",
     "title": "Bar Skill",
-    "level": "Bartender muốn rèn luyện thao tác và độ chính xác",
+    "level": "Bartender muốn rèn luyện kỹ năng thao tác, kiểm soát dụng cụ và nâng cao sự linh hoạt khi làm việc sau quầy bar",
     "duration": "8 buổi",
     "price": "Liên hệ",
     "classSize": "Lớp thực hành",
@@ -466,42 +448,36 @@ export const courses: Course[] = [
     "location": "TP. Hồ Chí Minh",
     "summary": "Rèn luyện khả năng sử dụng dụng cụ, tốc độ, độ chính xác và sự mượt mà khi làm việc sau quầy bar.",
     "imageCaption": "Skill & Mix Academy · TP.HCM",
-    "accent": "coral",
+    "accent": "red",
     "image": {
       "url": "https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=1400&q=88",
       "alt": "Học viên luyện tập kỹ năng Bar Skill với dụng cụ bartender"
     },
     "syllabus": [
       {
-        "title": "Sử dụng và kiểm soát các dụng cụ bartender",
-        "description": "Nắm vững nền tảng, thực hành từng bước và nhận góp ý trực tiếp từ giảng viên."
+        "title": "Kỹ thuật sử dụng và kiểm soát các dụng cụ bartender"
       },
       {
-        "title": "Thao tác với Shaker, Jigger, Pour và Bar Spoon",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Rèn luyện kỹ năng với Shaker, Jigger, Pour và Bar Spoon"
       },
       {
-        "title": "Rolling, Shaking và Chill Glass",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Thực hành các kỹ thuật như Rolling, Shaking và Chill Glass"
       },
       {
-        "title": "Phối hợp kỹ năng trong quá trình pha chế",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Phối hợp các kỹ năng trong quá trình pha chế"
       },
       {
-        "title": "Rèn luyện tốc độ, độ chính xác và sự mượt mà",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Rèn luyện tốc độ, độ chính xác và sự mượt mà trong thao tác"
       },
       {
-        "title": "Ứng dụng kỹ năng vào quy trình làm việc tại quầy",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Ứng dụng kỹ năng vào quy trình làm việc tại quầy bar"
       }
     ]
   },
   {
     "slug": "mot-kem-mot",
     "title": "1 Kèm 1",
-    "level": "Lộ trình cá nhân theo mục tiêu học viên",
+    "level": "Học viên muốn học theo lộ trình cá nhân, tập trung vào những kỹ năng và mục tiêu phù hợp với nhu cầu của mình",
     "duration": "Theo lộ trình cá nhân",
     "price": "Liên hệ",
     "classSize": "1 học viên",
@@ -510,35 +486,29 @@ export const courses: Course[] = [
     "location": "TP. Hồ Chí Minh",
     "summary": "Lộ trình được xây dựng theo nền tảng, nhu cầu và mục tiêu riêng, với hướng dẫn trực tiếp từ giảng viên.",
     "imageCaption": "Skill & Mix Academy · TP.HCM",
-    "accent": "cobalt",
+    "accent": "black",
     "image": {
       "url": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=1400&q=88",
       "alt": "Học viên học và thực hành trực tiếp một kèm một cùng giảng viên"
     },
     "syllabus": [
       {
-        "title": "Nội dung theo nền tảng và mục tiêu của học viên",
-        "description": "Nắm vững nền tảng, thực hành từng bước và nhận góp ý trực tiếp từ giảng viên."
+        "title": "Nội dung được xây dựng dựa trên nền tảng và mục tiêu của từng học viên"
       },
       {
-        "title": "Rèn luyện kỹ thuật theo nhu cầu cá nhân",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Rèn luyện kỹ thuật và kỹ năng theo nhu cầu cá nhân"
       },
       {
-        "title": "Thực hành trực tiếp cùng giảng viên",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Thực hành trực tiếp cùng giảng viên"
       },
       {
-        "title": "Điều chỉnh thao tác trong quá trình học",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Được hướng dẫn và điều chỉnh thao tác trong quá trình học"
       },
       {
-        "title": "Tập trung cải thiện kỹ năng cần phát triển",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Tập trung cải thiện những kỹ năng học viên cần phát triển"
       },
       {
-        "title": "Xây dựng lộ trình phù hợp với định hướng cá nhân",
-        "description": "Hiểu kỹ thuật, luyện tập đúng thao tác và ứng dụng vào môi trường làm việc thực tế."
+        "title": "Xây dựng lộ trình học phù hợp với định hướng cá nhân"
       }
     ]
   }

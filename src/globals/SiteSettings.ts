@@ -7,11 +7,11 @@ const colour = (name: string, label: string) => ({
   label,
   type: 'text' as const,
   required: true,
-  admin: { description: 'Hex colour, for example #F25C3B.' },
+  admin: { description: 'Hex colour, for example #D7141A.' },
   validate: (value: unknown) =>
     typeof value === 'string' && /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)
       ? true
-      : 'Use a hex colour such as #F25C3B.',
+      : 'Use a hex colour such as #D7141A.',
 })
 
 export const SiteSettings = pageGlobal(
@@ -108,16 +108,17 @@ export const SiteSettings = pageGlobal(
             {
               name: 'theme',
               type: 'group',
-              admin: { description: 'Brand colours used across the whole website.' },
+              admin: {
+                description:
+                  'The website uses only these three colours. Adjust the exact shades here.',
+              },
               fields: [
                 {
                   type: 'row',
                   fields: [
-                    colour('paper', 'Paper (background)'),
-                    colour('ink', 'Ink (text)'),
-                    colour('coral', 'Coral'),
-                    colour('cobalt', 'Cobalt'),
-                    colour('acid', 'Acid'),
+                    colour('white', 'White'),
+                    colour('black', 'Black'),
+                    colour('red', 'Red'),
                   ],
                 },
               ],

@@ -19,7 +19,7 @@ export const Courses: CollectionConfig = {
   fields: [
     { name: 'title', type: 'text', required: true },
     slugField('title'),
-    { ...accentField(), admin: { position: 'sidebar', description: 'Colour used for this course.' } },
+    { ...accentField(), admin: { position: 'sidebar', description: 'Block colour for this course.' } },
     {
       type: 'tabs',
       tabs: [
@@ -90,7 +90,11 @@ export const Courses: CollectionConfig = {
               admin: { initCollapsed: true },
               fields: [
                 { name: 'title', type: 'text', required: true },
-                { name: 'description', type: 'textarea', required: true },
+                {
+                  name: 'description',
+                  type: 'textarea',
+                  admin: { description: 'Optional. When set, the lesson opens to show it.' },
+                },
               ],
             },
           ],
