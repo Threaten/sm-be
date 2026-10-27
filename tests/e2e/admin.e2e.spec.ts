@@ -19,22 +19,22 @@ test.describe('Admin Panel', () => {
   })
 
   test('can navigate to dashboard', async () => {
-    await page.goto('http://localhost:3002/admin')
-    await expect(page).toHaveURL('http://localhost:3002/admin')
+    await page.goto('http://admin.skillandmix.com/admin')
+    await expect(page).toHaveURL('http://admin.skillandmix.com/admin')
     const dashboardArtifact = page.locator('span[title="Dashboard"]').first()
     await expect(dashboardArtifact).toBeVisible()
   })
 
   test('can navigate to list view', async () => {
-    await page.goto('http://localhost:3002/admin/collections/users')
-    await expect(page).toHaveURL('http://localhost:3002/admin/collections/users')
+    await page.goto('http://admin.skillandmix.com/admin/collections/users')
+    await expect(page).toHaveURL('http://admin.skillandmix.com/admin/collections/users')
     const listViewArtifact = page.locator('h1', { hasText: 'Users' }).first()
     await expect(listViewArtifact).toBeVisible()
   })
 
   test('can edit a page global', async () => {
-    await page.goto('http://localhost:3002/admin/globals/home-page')
-    await expect(page).toHaveURL('http://localhost:3002/admin/globals/home-page')
+    await page.goto('http://admin.skillandmix.com/admin/globals/home-page')
+    await expect(page).toHaveURL('http://admin.skillandmix.com/admin/globals/home-page')
     await expect(page.locator('form').first()).toBeVisible()
   })
 })

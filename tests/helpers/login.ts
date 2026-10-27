@@ -15,7 +15,7 @@ export interface LoginOptions {
  */
 export async function login({
   page,
-  serverURL = 'http://localhost:3002',
+  serverURL = 'http://admin.skillandmix.com',
   user,
 }: LoginOptions): Promise<void> {
   await page.goto(`${serverURL}/admin/login`)
