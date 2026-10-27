@@ -14,9 +14,6 @@ export const Media: CollectionConfig = {
     imageSizes: [
       { name: 'card', width: 800, height: 1000, position: 'centre' },
       { name: 'wide', width: 1600, height: 1000, position: 'centre' },
-      // Logos are often exported on a big padded canvas; this copy is cut to the artwork so the
-      // website can size it by its visible height.
-      { name: 'logo', height: 240, withoutEnlargement: true, trimOptions: { threshold: 10 } },
     ],
   },
   fields: [
