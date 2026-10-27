@@ -2,7 +2,7 @@
 
 Payload CMS on MongoDB. 9 collections + 9 globals. Every field below is rendered by `sm-fe`
 (column **Used by**), except the admin-only System collections. If you add a field, add it here
-and to `sm-fe/lib/types.ts`.
+and to `sm-fe/lib/types.ts` (plus its copy in `sm-be/src/seed/types.ts`).
 
 Raw MongoDB collection names differ from slugs for two collections: `staff` → `staffs`, `gallery` → `galleries`.
 

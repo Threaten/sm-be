@@ -11,7 +11,7 @@ import { getPayload, type CollectionSlug, type GlobalSlug } from 'payload'
 import config from '@payload-config'
 import { Types } from 'mongoose'
 
-import * as fallback from '../../sm-fe/lib/fallback'
+import * as fallback from './seed/content'
 
 type Doc = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 

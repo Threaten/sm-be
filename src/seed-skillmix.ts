@@ -1,6 +1,6 @@
 /**
- * Seeds a fresh database with the website's built-in content
- * (sm-fe/lib/fallback.ts), downloading every image into Media.
+ * Seeds a fresh database with the content in src/seed/content.ts,
+ * downloading every image into Media.
  *
  *   npm run seed:skillmix
  *
@@ -10,7 +10,7 @@
 import { getPayload, type CollectionSlug, type Where } from 'payload'
 import config from '@payload-config'
 
-import * as content from '../../sm-fe/lib/fallback'
+import * as content from './seed/content'
 
 type PayloadClient = Awaited<ReturnType<typeof getPayload>>
 type Image = { url: string; alt: string }
