@@ -46,6 +46,44 @@ export const image = (name: string): Field => ({
   required: true,
 })
 
+/** Search-result and link-preview overrides. Anything left empty falls back to the page's own content. */
+export const seoField: Field = {
+  name: 'seo',
+  label: 'SEO',
+  type: 'group',
+  admin: {
+    description:
+      'Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.',
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      maxLength: 70,
+      admin: { description: 'Browser tab and search-result title. Around 50–60 characters.' },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      maxLength: 200,
+      admin: { description: 'Search-result snippet. Around 120–160 characters.' },
+    },
+    {
+      name: 'image',
+      label: 'Share image',
+      type: 'upload',
+      relationTo: 'media',
+      admin: { description: 'Shown when the link is shared. 1200 × 630 px works best.' },
+    },
+    {
+      name: 'noIndex',
+      label: 'Hide from search engines',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+  ],
+}
+
 /** Shared shell for the page globals: access from the matrix, audit hooks, "Pages" group. */
 export const pageGlobal = (
   slug: PermissionGlobalSlug,
@@ -58,5 +96,6 @@ export const pageGlobal = (
   access: globalAccess(slug),
   admin: { group },
   hooks: auditGlobal(slug),
-  fields,
+  // Every public page gets its own SEO overrides; site-wide globals do not.
+  fields: group === 'Pages' ? [...fields, seoField] : fields,
 })

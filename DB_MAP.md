@@ -16,7 +16,8 @@ erDiagram
   MEDIA ||--o{ GALLERY : "image"
   MEDIA ||--o{ HOME_PAGE : "hero.imageLeft/Right, manifesto.image"
   MEDIA ||--o{ ABOUT_PAGE : "story.imageOne/Two"
-  MEDIA ||--o{ SITE_SETTINGS : "seo.shareImage"
+  MEDIA ||--o{ SITE_SETTINGS : "logo.image/imageOnDark, seo.shareImage/favicon"
+  MEDIA ||--o{ ALL_PAGES : "seo.image"
   MEDIA ||--o{ ENTRY_POPUP : "slides[].image"
   STAFF ||--o| HOME_PAGE : "featuredInstructor.person"
   COURSES }o--o{ CONTACT_SUBMISSIONS : "courses"
@@ -90,9 +91,13 @@ image descriptions site-wide; the old per-place `imageAlt` fields were removed.
 `intro` on every inner page is `{ eyebrow, title, copy, accent: red|black }`; its big number comes from the
 page's position in Site settings → navigation.
 
+Every page global (group "Pages"), course and staff member also has an optional
+`seo { title?, description?, image?, noIndex }`. Empty values fall back to the page's own content, then to
+Site settings → seo.
+
 | Global | Fields | Page |
 | --- | --- | --- |
-| **site-settings** | announcementBar { enabled, message, linkLabel?, linkHref? } · navigation[] { label, href } · headerCta { label, href } · contact { address, mapUrl, email, phone, hours } · social { handle, url } · footer { tagline, headline, ctaLabel, addressLabel, contactLabel, linksLabel, copyright } · seo { siteName, description, shareImage } · theme { white, black, red } (hex) | header, footer, `<head>` meta, CSS colour variables; contact/social reused by Contact, Services, Gallery |
+| **site-settings** | announcementBar { enabled, message, linkLabel?, linkHref? } · navigation[] { label, href } · headerCta { label, href } · contact { address, mapUrl, email, phone, hours } · social { handle, url } · footer { tagline, headline, ctaLabel, addressLabel, contactLabel, linksLabel, copyright } · logo { image?, imageOnDark? } · seo { siteName, description, shareImage, siteUrl?, keywords?, favicon?, noIndex } · theme { white, black, red } (hex) | header, footer, `<head>` meta, favicon, robots.txt, sitemap.xml, CSS colour variables; contact/social reused by Contact, Services, Gallery |
 | **home-page** | hero { kickerLeft, kickerRight, titleLineOne, titleWord, titleEmphasis, titleLineThree, summary, buttonLabel, imageLeft, imageRight, burst, note } · marquee · manifesto { eyebrow, title, copy, image, stamp, linkLabel } · featuredInstructor { eyebrow, title, person → staff, linkLabel } · featuredCourses { eyebrow, title, linkLabel } · testimonials { eyebrow } | `/` |
 | **about-page** | intro · story { eyebrow, title, copy, imageOne, imageTwo, imageOneCaption, stamp } · marquee · values { title, items[] { title, copy } } | `/about` |
 | **courses-page** | intro · catalog { viewCourseLabel, stickerLabel } · marquee · faq { eyebrow, title, items[] { question, answer } } · help { eyebrow, title, linkLabel } · detail { backLabel, durationLabel, tuitionLabel, classSizeLabel, reserveLabel, syllabusEyebrow, syllabusTitle, syllabusCopy, intakeLabel } | `/courses`, `/courses/[slug]`, home list labels |

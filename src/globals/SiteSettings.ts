@@ -14,6 +14,14 @@ const colour = (name: string, label: string) => ({
       : 'Use a hex colour such as #D7141A.',
 })
 
+const logoUpload = (name: string, label: string, description: string) => ({
+  name,
+  label,
+  type: 'upload' as const,
+  relationTo: 'media' as const,
+  admin: { description },
+})
+
 export const SiteSettings = pageGlobal(
   'site-settings',
   'Site settings',
@@ -96,13 +104,61 @@ export const SiteSettings = pageGlobal(
           label: 'Brand',
           fields: [
             {
+              name: 'logo',
+              type: 'group',
+              admin: {
+                description:
+                  'Leave empty to show the built-in "skill&mix" wordmark. SVG or transparent PNG works best.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    logoUpload('image', 'Logo', 'Shown in the header on a light background.'),
+                    logoUpload(
+                      'imageOnDark',
+                      'Logo on dark',
+                      'Shown in the footer on a dark background. Leave empty to reuse the logo.',
+                    ),
+                  ],
+                },
+              ],
+            },
+            {
               name: 'seo',
               label: 'Search & sharing',
               type: 'group',
+              admin: { description: 'Defaults for every page. Each page can override them in its own SEO section.' },
               fields: [
                 text('siteName'),
                 textarea('description', 'Default description for search results and link previews.'),
                 image('shareImage'),
+                {
+                  name: 'siteUrl',
+                  label: 'Website address',
+                  type: 'text',
+                  admin: {
+                    description:
+                      'Public address such as https://skillandmix.com. Used for canonical links, the sitemap and link previews.',
+                  },
+                  validate: (value: unknown) =>
+                    !value || (typeof value === 'string' && /^https?:\/\/[^\s/]+/.test(value))
+                      ? true
+                      : 'Use a full address starting with https://',
+                },
+                {
+                  name: 'keywords',
+                  type: 'text',
+                  admin: { description: 'Comma-separated, for example: bartender, pha chế, TP.HCM.' },
+                },
+                logoUpload('favicon', 'Browser icon', 'Tab and home-screen icon. Square image, at least 512 × 512 px.'),
+                {
+                  name: 'noIndex',
+                  label: 'Hide the whole site from search engines',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  admin: { description: 'Turn on while the site is still in testing.' },
+                },
               ],
             },
             {

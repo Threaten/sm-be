@@ -202,6 +202,24 @@ export interface Course {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -292,6 +310,24 @@ export interface Staff {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -539,6 +575,14 @@ export interface CoursesSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -576,6 +620,14 @@ export interface StaffSelect<T extends boolean = true> {
         title?: T;
         organization?: T;
         id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -829,6 +881,24 @@ export interface HomePage {
   testimonials: {
     eyebrow: string;
   };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -869,6 +939,24 @@ export interface AboutPage {
           id?: string | null;
         }[]
       | null;
+  };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -923,6 +1011,24 @@ export interface CoursesPage {
     syllabusCopy: string;
     intakeLabel: string;
   };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -967,6 +1073,24 @@ export interface TeamPage {
     favoritePourLabel: string;
     nextLabel: string;
   };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -993,6 +1117,24 @@ export interface ServicesPage {
     eyebrow: string;
     title: string;
   };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1017,6 +1159,24 @@ export interface GalleryPage {
    */
   social: {
     copy: string;
+  };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1054,6 +1214,24 @@ export interface ContactPage {
     submitLabel: string;
     successTitle: string;
     successCopy: string;
+  };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1129,6 +1307,22 @@ export interface SiteSetting {
     linksLabel: string;
     copyright: string;
   };
+  /**
+   * Leave empty to show the built-in "skill&mix" wordmark. SVG or transparent PNG works best.
+   */
+  logo?: {
+    /**
+     * Shown in the header on a light background.
+     */
+    image?: (string | null) | Media;
+    /**
+     * Shown in the footer on a dark background. Leave empty to reuse the logo.
+     */
+    imageOnDark?: (string | null) | Media;
+  };
+  /**
+   * Defaults for every page. Each page can override them in its own SEO section.
+   */
   seo: {
     siteName: string;
     /**
@@ -1136,6 +1330,22 @@ export interface SiteSetting {
      */
     description: string;
     shareImage: string | Media;
+    /**
+     * Public address such as https://skillandmix.com. Used for canonical links, the sitemap and link previews.
+     */
+    siteUrl?: string | null;
+    /**
+     * Comma-separated, for example: bartender, pha chế, TP.HCM.
+     */
+    keywords?: string | null;
+    /**
+     * Tab and home-screen icon. Square image, at least 512 × 512 px.
+     */
+    favicon?: (string | null) | Media;
+    /**
+     * Turn on while the site is still in testing.
+     */
+    noIndex?: boolean | null;
   };
   /**
    * The website uses only these three colours. Adjust the exact shades here.
@@ -1249,6 +1459,14 @@ export interface HomePageSelect<T extends boolean = true> {
     | {
         eyebrow?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1289,6 +1507,14 @@ export interface AboutPageSelect<T extends boolean = true> {
               copy?: T;
               id?: T;
             };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1347,6 +1573,14 @@ export interface CoursesPageSelect<T extends boolean = true> {
         syllabusCopy?: T;
         intakeLabel?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1388,6 +1622,14 @@ export interface TeamPageSelect<T extends boolean = true> {
         favoritePourLabel?: T;
         nextLabel?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1412,6 +1654,14 @@ export interface ServicesPageSelect<T extends boolean = true> {
         eyebrow?: T;
         title?: T;
       };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1434,6 +1684,14 @@ export interface GalleryPageSelect<T extends boolean = true> {
     | T
     | {
         copy?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1474,6 +1732,14 @@ export interface ContactPageSelect<T extends boolean = true> {
         submitLabel?: T;
         successTitle?: T;
         successCopy?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1532,12 +1798,22 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         linksLabel?: T;
         copyright?: T;
       };
+  logo?:
+    | T
+    | {
+        image?: T;
+        imageOnDark?: T;
+      };
   seo?:
     | T
     | {
         siteName?: T;
         description?: T;
         shareImage?: T;
+        siteUrl?: T;
+        keywords?: T;
+        favicon?: T;
+        noIndex?: T;
       };
   theme?:
     | T

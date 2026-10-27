@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { collectionAccess } from '@/access'
 import { slugField } from '@/fields/slug'
+import { seoField } from '@/globals/shared'
 import { auditCollection } from '@/hooks/audit'
 
 export const Staff: CollectionConfig = {
@@ -84,6 +85,7 @@ export const Staff: CollectionConfig = {
             },
           ],
         },
+        { label: 'SEO', fields: [seoField] },
       ],
     },
   ],
