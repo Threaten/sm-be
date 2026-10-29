@@ -1,6 +1,6 @@
 # Database map
 
-Payload CMS on MongoDB. 9 collections + 9 globals. Every field below is rendered by `sm-fe`
+Payload CMS on MongoDB. 10 collections + 10 globals. Every field below is rendered by `sm-fe`
 (column **Used by**), except the admin-only System collections. If you add a field, add it here
 and to `sm-fe/lib/types.ts` (plus its copy in `sm-be/src/seed/types.ts`).
 
@@ -14,6 +14,7 @@ erDiagram
   MEDIA ||--o{ STAFF : "image"
   MEDIA ||--o{ SERVICES : "image"
   MEDIA ||--o{ GALLERY : "image"
+  MEDIA ||--o{ NEWS : "image, content uploads"
   MEDIA ||--o{ HOME_PAGE : "hero.imageLeft/Right, manifesto.image"
   MEDIA ||--o{ ABOUT_PAGE : "story.imageOne/Two"
   MEDIA ||--o{ SITE_SETTINGS : "logo.image/imageOnDark, seo.shareImage/favicon"
@@ -63,6 +64,17 @@ derives every "01, 02…" number from position, so there are no hand-typed numbe
 
 **services** · `/services` — title, label, copy, image → media.
 
+**news** (label: News) · `/news`, `/news/[slug]`, sitemap. Drafts enabled: visitors only get `_status: published`; sorted by `-publishedAt`, not drag order.
+| Field | Type | Used by |
+| --- | --- | --- |
+| title, slug | text, slug unique auto from title | list, detail, URLs |
+| publishedAt | date | list, detail, ordering |
+| accent | red \| black | list block, detail hero |
+| excerpt | textarea (max 300) | list, detail hero, page meta description |
+| image → media | upload | list, detail hero, share image |
+| imageCaption? | text | detail hero photo tag |
+| content | richText (Lexical: paragraphs, headings, lists, quotes, links, uploads, rules; bold/italic/underline/strike) | detail body via `sm-fe/components/RichText.tsx` |
+
 **testimonials** · home carousel — quote, author, role. *(Moved out of the old site-content global.)*
 
 ### Leads
@@ -91,7 +103,7 @@ image descriptions site-wide; the old per-place `imageAlt` fields were removed.
 `intro` on every inner page is `{ eyebrow, title, copy, accent: red|black }`; its big number comes from the
 page's position in Site settings → navigation.
 
-Every page global (group "Pages"), course and staff member also has an optional
+Every page global (group "Pages"), course, staff member and news post also has an optional
 `seo { title?, description?, image?, noIndex }`. Empty values fall back to the page's own content, then to
 Site settings → seo.
 
@@ -103,6 +115,7 @@ Site settings → seo.
 | **courses-page** | intro · catalog { viewCourseLabel, stickerLabel } · marquee · faq { eyebrow, title, items[] { question, answer } } · help { eyebrow, title, linkLabel } · detail { backLabel, durationLabel, tuitionLabel, classSizeLabel, reserveLabel, syllabusEyebrow, syllabusTitle, syllabusCopy, intakeLabel } | `/courses`, `/courses/[slug]`, home list labels |
 | **team-page** | intro · cardLinkLabel · note { eyebrow, title, copy, linkLabel } · profile { backLabel, profileLabel, stamp, bioLabel, achievementsEyebrow, achievementsTitle, practiceEyebrow, practiceTitle, offDutyLabel, favoritePourLabel, nextLabel } | `/staffs`, `/staffs/[slug]` |
 | **services-page** | intro · itemLinkLabel · banner { eyebrow, title } | `/services` |
+| **news-page** | intro · readMoreLabel · emptyLabel · detail { backLabel, publishedLabel, moreTitle } | `/news`, `/news/[slug]` |
 | **gallery-page** | intro · graffiti · social { copy } | `/gallery` |
 | **contact-page** | intro · panels { visitTitle, visitLinkLabel, emailTitle, emailNote, phoneTitle } · form { eyebrow, title, nameLabel, phoneLabel, coursesLabel, messageLabel, messagePlaceholder, submitLabel, successTitle, successCopy } | `/contact-us` |
 | **entry-popup** | enabled · dismissLabel · slides[] { active, displayMode: image\|video, title, eyebrow?, copy?, image?, ctaLabel?, ctaHref?, videoUrl? } | every page, once |

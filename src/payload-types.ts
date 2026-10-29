@@ -70,6 +70,7 @@ export interface Config {
     courses: Course;
     staff: Staff;
     services: Service;
+    news: News;
     testimonials: Testimonial;
     'contact-submissions': ContactSubmission;
     media: Media;
@@ -86,6 +87,7 @@ export interface Config {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     staff: StaffSelect<false> | StaffSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -107,6 +109,7 @@ export interface Config {
     'courses-page': CoursesPage;
     'team-page': TeamPage;
     'services-page': ServicesPage;
+    'news-page': NewsPage;
     'gallery-page': GalleryPage;
     'contact-page': ContactPage;
     'site-settings': SiteSetting;
@@ -118,6 +121,7 @@ export interface Config {
     'courses-page': CoursesPageSelect<false> | CoursesPageSelect<true>;
     'team-page': TeamPageSelect<false> | TeamPageSelect<true>;
     'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
+    'news-page': NewsPageSelect<false> | NewsPageSelect<true>;
     'gallery-page': GalleryPageSelect<false> | GalleryPageSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -351,6 +355,73 @@ export interface Service {
   createdAt: string;
 }
 /**
+ * Articles on the News page, newest first. Save as draft until a post is ready.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: string;
+  title: string;
+  /**
+   * Used in the page URL. Leave empty to generate it from the title.
+   */
+  slug: string;
+  /**
+   * Shown on the post and used to order the list.
+   */
+  publishedAt: string;
+  /**
+   * Block colour for this post.
+   */
+  accent: 'red' | 'black';
+  /**
+   * One or two sentences for the news list and link previews.
+   */
+  excerpt: string;
+  image: string | Media;
+  /**
+   * Optional tag on the cover photo.
+   */
+  imageCaption?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * Student quotes shown in the home page carousel. Drag to reorder.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -481,6 +552,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'services';
         value: string | Service;
+      } | null)
+    | ({
+        relationTo: 'news';
+        value: string | News;
       } | null)
     | ({
         relationTo: 'testimonials';
@@ -644,6 +719,31 @@ export interface ServicesSelect<T extends boolean = true> {
   image?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  publishedAt?: T;
+  accent?: T;
+  excerpt?: T;
+  image?: T;
+  imageCaption?: T;
+  content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1116,6 +1216,58 @@ export interface ServicesPage {
   banner: {
     eyebrow: string;
     title: string;
+  };
+  /**
+   * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
+   */
+  seo?: {
+    /**
+     * Browser tab and search-result title. Around 50–60 characters.
+     */
+    title?: string | null;
+    /**
+     * Search-result snippet. Around 120–160 characters.
+     */
+    description?: string | null;
+    /**
+     * Shown when the link is shared. 1200 × 630 px works best.
+     */
+    image?: (string | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-page".
+ */
+export interface NewsPage {
+  id: string;
+  intro: {
+    eyebrow: string;
+    title: string;
+    copy: string;
+    accent: 'red' | 'black';
+  };
+  /**
+   * Button on each post in the list.
+   */
+  readMoreLabel: string;
+  /**
+   * Shown while there are no published posts.
+   */
+  emptyLabel: string;
+  detail: {
+    backLabel: string;
+    /**
+     * Shown before the publish date.
+     */
+    publishedLabel: string;
+    /**
+     * Heading above the other recent posts at the end of a post.
+     */
+    moreTitle: string;
   };
   /**
    * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
@@ -1653,6 +1805,40 @@ export interface ServicesPageSelect<T extends boolean = true> {
     | {
         eyebrow?: T;
         title?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-page_select".
+ */
+export interface NewsPageSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        copy?: T;
+        accent?: T;
+      };
+  readMoreLabel?: T;
+  emptyLabel?: T;
+  detail?:
+    | T
+    | {
+        backLabel?: T;
+        publishedLabel?: T;
+        moreTitle?: T;
       };
   seo?:
     | T

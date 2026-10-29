@@ -147,6 +147,13 @@ export type TeamPage = {
   };
 };
 
+export type NewsPage = {
+  intro: PageIntro;
+  readMoreLabel: string;
+  emptyLabel: string;
+  detail: { backLabel: string; publishedLabel: string; moreTitle: string };
+};
+
 export type ServicesPage = {
   intro: PageIntro;
   itemLinkLabel: string;

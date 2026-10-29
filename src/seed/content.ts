@@ -15,6 +15,7 @@ import type {
   GalleryPage,
   HomePage,
   Service,
+  NewsPage,
   ServicesPage,
   SiteSettings,
   StaffMember,
@@ -31,6 +32,7 @@ const navigation = [
   { label: "Giảng Viên", href: "/staffs" },
   { label: "Thư Viện", href: "/gallery" },
   { label: "Dịch Vụ", href: "/services" },
+  { label: "Tin Tức", href: "/news" },
 ];
 
 export const siteSettings: SiteSettings = {
@@ -235,6 +237,18 @@ export const servicesPage: ServicesPage = {
   },
   itemLinkLabel: "Start a conversation",
   banner: { eyebrow: "Need something stranger?", title: "We like a brief with a little bite." },
+};
+
+export const newsPage: NewsPage = {
+  intro: {
+    eyebrow: "Tin tức",
+    title: "TIN TỨC TỪ SKILL & MIX",
+    copy: "Lịch khai giảng, sự kiện, workshop và những câu chuyện từ quầy bar của Skill & Mix.",
+    accent: "black",
+  },
+  readMoreLabel: "Đọc tiếp",
+  emptyLabel: "Chưa có bài viết nào. Quay lại sau nhé.",
+  detail: { backLabel: "Tất cả tin tức", publishedLabel: "Đăng ngày", moreTitle: "Tin khác" },
 };
 
 export const galleryPage: GalleryPage = {

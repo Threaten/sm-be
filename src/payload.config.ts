@@ -10,6 +10,7 @@ import { ContactSubmissions } from './collections/ContactSubmissions'
 import { Courses } from './collections/Courses'
 import { Gallery } from './collections/Gallery'
 import { Media } from './collections/Media'
+import { News } from './collections/News'
 import { Services } from './collections/Services'
 import { Staff } from './collections/Staff'
 import { Testimonials } from './collections/Testimonials'
@@ -20,6 +21,7 @@ import { CoursesPage } from './globals/CoursesPage'
 import { EntryPopup } from './globals/EntryPopup'
 import { GalleryPage } from './globals/GalleryPage'
 import { HomePage } from './globals/HomePage'
+import { NewsPage } from './globals/NewsPage'
 import { ServicesPage } from './globals/ServicesPage'
 import { SiteSettings } from './globals/SiteSettings'
 import { TeamPage } from './globals/TeamPage'
@@ -65,6 +67,7 @@ export default buildConfig({
     Courses,
     Staff,
     Services,
+    News,
     Testimonials,
     ContactSubmissions,
     Media,
@@ -82,6 +85,7 @@ export default buildConfig({
     CoursesPage,
     TeamPage,
     ServicesPage,
+    NewsPage,
     GalleryPage,
     ContactPage,
     SiteSettings,

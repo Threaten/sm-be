@@ -48,6 +48,8 @@ export const collectionPermissions = {
   courses: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
   staff: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
   services: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
+  // Visitors see published posts only; drafts need a signed-in role (see News.ts).
+  news: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
   testimonials: { read: 'public', create: TEAM, update: TEAM, delete: EDITORS },
   gallery: { read: 'public', create: TEAM, update: TEAM, delete: EDITORS },
   media: { read: 'public', create: TEAM, update: TEAM, delete: EDITORS },
@@ -71,6 +73,7 @@ export const globalPermissions = {
   'courses-page': { read: 'public', update: EDITORS },
   'team-page': { read: 'public', update: EDITORS },
   'services-page': { read: 'public', update: EDITORS },
+  'news-page': { read: 'public', update: EDITORS },
   'gallery-page': { read: 'public', update: EDITORS },
   'contact-page': { read: 'public', update: EDITORS },
   'entry-popup': { read: 'public', update: TEAM },

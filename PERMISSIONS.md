@@ -33,6 +33,8 @@ Fixed rules that apply regardless of the matrix:
 | | create / update / delete | ✓ | — | Should instructors edit their own profile? (needs an owner field) |
 | Services | read | public | public | Must stay public. |
 | | create / update / delete | ✓ | — | |
+| News | read | public | public | Visitors see published posts only; drafts need a signed-in role. |
+| | create / update / delete | ✓ | — | Should staff draft posts for an editor to publish? |
 | Testimonials | read | public | public | Must stay public. |
 | | create / update | ✓ | ✓ | Staff collect quotes from students. |
 | | delete | ✓ | — | |
@@ -52,7 +54,7 @@ Fixed rules that apply regardless of the matrix:
 
 | Global | read | Editor update | Staff update | Decide / notes |
 | --- | --- | :-: | :-: | --- |
-| Home / About / Courses / Team / Services / Gallery / Contact page | public | ✓ | — | |
+| Home / About / Courses / Team / Services / News / Gallery / Contact page | public | ✓ | — | |
 | Entry popup | public | ✓ | ✓ | Staff run short promotions. |
 | Site settings (nav, contact info, theme, SEO) | public | — | — | Super admin only. Editors would usually need contact info; split it out if so. |
 

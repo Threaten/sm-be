@@ -127,6 +127,7 @@ async function seed() {
     'courses-page': content.coursesPage,
     'team-page': content.teamPage,
     'services-page': content.servicesPage,
+    'news-page': content.newsPage,
     'gallery-page': content.galleryPage,
     'contact-page': content.contactPage,
     'entry-popup': {
