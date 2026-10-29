@@ -55,6 +55,26 @@ async function upsert(
   return String(doc.id)
 }
 
+/** Plain paragraphs as a Lexical rich-text value. */
+const richText = (paragraphs: string[]) => ({
+  root: {
+    type: 'root',
+    version: 1,
+    direction: 'ltr',
+    format: '',
+    indent: 0,
+    children: paragraphs.map((text) => ({
+      type: 'paragraph',
+      version: 1,
+      direction: 'ltr',
+      format: '',
+      indent: 0,
+      textFormat: 0,
+      children: [{ type: 'text', version: 1, text, format: 0, detail: 0, mode: 'normal', style: '' }],
+    })),
+  },
+})
+
 async function seed() {
   const payload = await getPayload({ config })
   payload.logger.info('Seeding Skill & Mix content...')
@@ -92,6 +112,16 @@ async function seed() {
 
   for (const testimonial of content.testimonials) {
     await upsert(payload, 'testimonials', { author: { equals: testimonial.author } }, testimonial)
+  }
+
+  for (const post of content.news) {
+    const { body, ...fields } = post
+    await upsert(payload, 'news', { slug: { equals: post.slug } }, {
+      ...fields,
+      _status: 'published',
+      image: await upload(payload, post.image, `news-${post.slug}.jpg`),
+      content: richText(body),
+    })
   }
 
   const { siteSettings, homePage, aboutPage, entryPopup } = content

@@ -16,6 +16,7 @@ import type {
   HomePage,
   Service,
   NewsPage,
+  NewsPost,
   ServicesPage,
   SiteSettings,
   StaffMember,
@@ -250,6 +251,9 @@ export const newsPage: NewsPage = {
   emptyLabel: "Chưa có bài viết nào. Quay lại sau nhé.",
   detail: { backLabel: "Tất cả tin tức", publishedLabel: "Đăng ngày", moreTitle: "Tin khác" },
 };
+
+/** Published news posts, newest first. */
+export const news: NewsPost[] = [];
 
 export const galleryPage: GalleryPage = {
   intro: {

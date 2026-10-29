@@ -147,6 +147,18 @@ export type TeamPage = {
   };
 };
 
+/** A news post. `body` is plain paragraphs; the seed turns them into rich text. */
+export type NewsPost = {
+  slug: string;
+  title: string;
+  publishedAt: string;
+  accent: Accent;
+  excerpt: string;
+  image: Image;
+  imageCaption?: string;
+  body: string[];
+};
+
 export type NewsPage = {
   intro: PageIntro;
   readMoreLabel: string;
