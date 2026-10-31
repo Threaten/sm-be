@@ -46,10 +46,12 @@ export default buildConfig({
     meta: {
       defaultOGImageType: 'off',
       description: 'Skill & Mix content management system.',
-      icons: {
-        icon: '/favicon.svg',
-        shortcut: '/favicon.svg',
-      },
+      // Generated from Site settings → Brand → Browser icon (src/app/(icons)), same as the website.
+      icons: [
+        { rel: 'icon', type: 'image/x-icon', sizes: '16x16 32x32 48x48', url: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', url: '/icons/icon-192.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', url: '/icons/apple-touch-icon.png' },
+      ],
       openGraph: {
         description: 'Skill & Mix content management system.',
         siteName: 'Skill & Mix CMS',
