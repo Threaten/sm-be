@@ -1487,7 +1487,7 @@ export interface SiteSetting {
      */
     siteUrl?: string | null;
     /**
-     * Comma-separated, for example: bartender, pha chế, TP.HCM.
+     * Separate with commas or new lines, for example: bartender, pha chế, TP.HCM.
      */
     keywords?: string | null;
     /**

@@ -148,8 +148,10 @@ export const SiteSettings = pageGlobal(
                 },
                 {
                   name: 'keywords',
-                  type: 'text',
-                  admin: { description: 'Comma-separated, for example: bartender, pha chế, TP.HCM.' },
+                  type: 'textarea',
+                  admin: {
+                    description: 'Separate with commas or new lines, for example: bartender, pha chế, TP.HCM.',
+                  },
                 },
                 logoUpload('favicon', 'Browser icon', 'Tab and home-screen icon. Square image, at least 512 × 512 px.'),
                 {
