@@ -25,7 +25,9 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@lexical/clipboard": "0.41.0",
     "@payloadcms/admin-bar": "3.85.2",
+    "@payloadcms/db-mongodb": "3.85.2",
     "@payloadcms/live-preview-react": "3.85.2",
     "@payloadcms/next": "3.85.2",
     "@payloadcms/plugin-form-builder": "3.85.2",
@@ -54,8 +56,7 @@
     "react-dom": "19.2.6",
     "react-hook-form": "7.71.1",
     "sharp": "0.34.2",
-    "tailwind-merge": "^3.4.0",
-    "@payloadcms/db-mongodb": "3.85.2"
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

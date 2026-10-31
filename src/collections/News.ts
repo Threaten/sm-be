@@ -2,6 +2,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
 import { collectionAccess } from '@/access'
+import { EmojiPasteFeature } from '@/components/admin/richText/EmojiPaste'
 import { accentField } from '@/fields/accent'
 import { slugField } from '@/fields/slug'
 import { seoField } from '@/globals/shared'
@@ -74,8 +75,10 @@ export const News: CollectionConfig = {
               type: 'richText',
               required: true,
               editor: lexicalEditor({
-                features: ({ defaultFeatures }) =>
-                  defaultFeatures.filter((feature) => !UNSUPPORTED_FEATURES.has(feature.key)),
+                features: ({ defaultFeatures }) => [
+                  ...defaultFeatures.filter((feature) => !UNSUPPORTED_FEATURES.has(feature.key)),
+                  EmojiPasteFeature(),
+                ],
               }),
             },
           ],
