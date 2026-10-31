@@ -12,8 +12,8 @@ export const SkillMixLogo = () => (
   </div>
 )
 
+/** The browser icon from Site settings → Brand (served by src/app/(icons)), so it matches the tab and website. */
 export const SkillMixIcon = () => (
-  <span className="skill-mix-icon" aria-label="Skill & Mix CMS">
-    <span aria-hidden="true">S&amp;M</span>
-  </span>
+  // eslint-disable-next-line @next/next/no-img-element
+  <img className="skill-mix-icon" src="/icons/icon-96.png" alt="Skill & Mix CMS" width={25} height={25} />
 )
