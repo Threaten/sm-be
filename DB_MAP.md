@@ -109,7 +109,7 @@ Site settings → seo.
 
 | Global | Fields | Page |
 | --- | --- | --- |
-| **site-settings** | announcementBar { enabled, message, linkLabel?, linkHref? } · navigation[] { label, href } · headerCta { label, href } · contact { address, mapUrl, email, phone, hours } · social { handle, url } · footer { tagline, headline, ctaLabel, addressLabel, contactLabel, linksLabel, copyright } · logo { image?, imageOnDark? } · seo { siteName, description, shareImage, siteUrl?, keywords?, favicon?, noIndex } · theme { white, black, red } (hex) | header, footer, `<head>` meta, favicon, robots.txt, sitemap.xml, CSS colour variables; contact/social reused by Contact, Services, Gallery |
+| **site-settings** | announcementBar { enabled, message, linkLabel?, linkHref? } · navigation[] { label, href } · headerCta { label, href } · contact { address, mapUrl, email, phone, hours } · socialLinks[] { platform, label?, url } · footer { tagline, headline, ctaLabel, addressLabel, contactLabel, linksLabel, copyright } · logo { image?, imageOnDark? } · seo { siteName, description, shareImage, siteUrl?, keywords?, favicon?, noIndex } · theme { white, black, red } (hex) | header, footer, `<head>` meta, favicon, robots.txt, sitemap.xml, CSS colour variables; contact/social reused by Contact, Services, Gallery |
 | **home-page** | hero { kickerLeft, kickerRight, titleLineOne, titleWord, titleEmphasis, titleLineThree, summary, buttonLabel, imageLeft, imageRight, burst, note } · marquee · manifesto { eyebrow, title, copy, image, stamp, linkLabel } · featuredInstructor { eyebrow, title, person → staff, linkLabel } · featuredCourses { eyebrow, title, linkLabel } · testimonials { eyebrow } | `/` |
 | **about-page** | intro · story { eyebrow, title, copy, imageOne, imageTwo, imageOneCaption, stamp } · marquee · values { title, items[] { title, copy } } | `/about` |
 | **courses-page** | intro · catalog { viewCourseLabel, stickerLabel } · marquee · faq { eyebrow, title, items[] { question, answer } } · help { eyebrow, title, linkLabel } · detail { backLabel, durationLabel, tuitionLabel, classSizeLabel, reserveLabel, syllabusEyebrow, syllabusTitle, syllabusCopy, intakeLabel } | `/courses`, `/courses/[slug]`, home list labels |
@@ -134,7 +134,7 @@ Multi-line text fields (`burst`, `note`, `stamp`, `schedule`, `address`, `hours`
 | `courses.imageAlt`, `story.imageOneAlt/imageTwoAlt`, popup `imageAlt` | `media.alt` | One description per image. |
 | `courses.tone` (CSS string) | `courses.accent` (select: red \| black) | Editors can't break styling. |
 | `syllabus[] { item }` + global `firstLessonCopy`/`lessonCopy` | `syllabus[] { title, description? }` | Each lesson can have its own text; no shared filler. |
-| `footer.address/email/phone`, `contactDetails[]`, `servicesBanner.email`, `gallerySocial.handle/href` | `site-settings.contact` + `social` | One source of contact truth. |
+| `footer.address/email/phone`, `contactDetails[]`, `servicesBanner.email`, `gallerySocial.handle/href` | `site-settings.contact` + `socialLinks` | One source of contact truth. |
 | `footer.links[]` | reuses `navigation` | Was a duplicate. |
 | `theme { background, foreground, accent, cobalt, acid }` (unused) | `theme { white, black, red }` (hex) | The site uses only black, white and red; the theme now drives them. |
 | `entryPopup` promotion fields + `additionalSlides[]` | `slides[]` | One slide model. |

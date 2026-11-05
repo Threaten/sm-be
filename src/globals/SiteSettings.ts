@@ -1,3 +1,5 @@
+import { SOCIAL_PLATFORMS } from '@/fields/socialPlatforms'
+
 import { image, pageGlobal, text, textarea } from './shared'
 
 const link = [text('label'), text('href', 'Internal path such as /courses, or a full URL.')]
@@ -75,9 +77,49 @@ export const SiteSettings = pageGlobal(
               ],
             },
             {
-              name: 'social',
-              type: 'group',
-              fields: [text('handle', 'For example @skillandmix.'), text('url')],
+              name: 'socialLinks',
+              label: 'Social links',
+              type: 'array',
+              admin: {
+                description:
+                  'Shown in this order in the footer and on the Gallery page, and given to Google as the academy’s official profiles.',
+                initCollapsed: true,
+                components: { RowLabel: '@/components/admin/SocialRowLabel#SocialRowLabel' },
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'platform',
+                      type: 'select',
+                      required: true,
+                      defaultValue: 'instagram',
+                      options: SOCIAL_PLATFORMS,
+                      admin: { width: '30%' },
+                    },
+                    {
+                      name: 'label',
+                      type: 'text',
+                      admin: {
+                        width: '70%',
+                        description: 'Text on the website, for example @skillandmix. Empty shows the platform name.',
+                      },
+                    },
+                  ],
+                },
+                {
+                  name: 'url',
+                  label: 'Profile URL',
+                  type: 'text',
+                  required: true,
+                  admin: { description: 'The full address of the profile, for example https://www.tiktok.com/@skillandmix.' },
+                  validate: (value: unknown) =>
+                    typeof value === 'string' && /^https?:\/\/[^/\s]+\/\S+/.test(value.trim())
+                      ? true
+                      : 'Enter the full profile address, not just the site (https://instagram.com/your-name).',
+                },
+              ],
             },
           ],
         },

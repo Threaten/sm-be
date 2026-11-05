@@ -158,10 +158,9 @@ async function migrate() {
         phone: oldSettings.footer?.phone ?? fallback.siteSettings.contact.phone,
         hours: phone?.copy ?? fallback.siteSettings.contact.hours,
       },
-      social: {
-        handle: stripArrow(c.gallerySocial?.handle) ?? fallback.siteSettings.social.handle,
-        url: c.gallerySocial?.href ?? fallback.siteSettings.social.url,
-      },
+      socialLinks: c.gallerySocial?.href
+        ? [{ platform: 'instagram', label: stripArrow(c.gallerySocial.handle), url: c.gallerySocial.href }]
+        : fallback.siteSettings.socialLinks,
       footer: { ...fallback.siteSettings.footer, ...oldSettings.footer },
       seo: { ...fallback.siteSettings.seo, shareImage: idOf(c.homeHero?.imageLeft) },
       theme: fallback.siteSettings.theme,

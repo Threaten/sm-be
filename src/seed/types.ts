@@ -57,7 +57,7 @@ export type SiteSettings = {
   navigation: Link[];
   headerCta: Link;
   contact: { address: string; mapUrl: string; email: string; phone: string; hours: string };
-  social: { handle: string; url: string };
+  socialLinks: { platform: string; label?: string; url: string }[];
   footer: {
     tagline: string;
     headline: string;

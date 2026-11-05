@@ -53,7 +53,7 @@ export const siteSettings: SiteSettings = {
     phone: "+84 28 3822 0148",
     hours: "Monday to Friday\n10:00 to 18:00",
   },
-  social: { handle: "@skillandmix", url: "https://instagram.com" },
+  socialLinks: [{ platform: "facebook", label: "Skill & Mix Academy", url: "https://www.facebook.com/p/Skill-Mix-Academy-61564798813025/" }],
   footer: {
     tagline: "Skill & Mix Academy",
     headline: "Sẵn Sàng Bắt Đầu Hành Trình Bartender?",

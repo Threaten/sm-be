@@ -1440,13 +1440,23 @@ export interface SiteSetting {
      */
     hours: string;
   };
-  social: {
-    /**
-     * For example @skillandmix.
-     */
-    handle: string;
-    url: string;
-  };
+  /**
+   * Shown in this order in the footer and on the Gallery page, and given to Google as the academy’s official profiles.
+   */
+  socialLinks?:
+    | {
+        platform: 'facebook' | 'instagram' | 'tiktok' | 'youtube' | 'zalo' | 'threads' | 'x' | 'linkedin' | 'other';
+        /**
+         * Text on the website, for example @skillandmix. Empty shows the platform name.
+         */
+        label?: string | null;
+        /**
+         * The full address of the profile, for example https://www.tiktok.com/@skillandmix.
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Footer links reuse the main navigation.
    */
@@ -1967,11 +1977,13 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         phone?: T;
         hours?: T;
       };
-  social?:
+  socialLinks?:
     | T
     | {
-        handle?: T;
+        platform?: T;
+        label?: T;
         url?: T;
+        id?: T;
       };
   footer?:
     | T
