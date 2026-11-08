@@ -6,6 +6,8 @@ import type {
   PayloadRequest,
 } from 'payload'
 
+import { revalidateFrontend } from './revalidate'
+
 type AuditAction = 'create' | 'update' | 'delete' | 'login'
 
 type AuditEntry = {
@@ -83,6 +85,7 @@ export const auditCollection = (slug: string, titleField?: string) => {
     const changedFields = operation === 'update' ? diffFields(doc, previousDoc) : undefined
     if (operation === 'update' && !changedFields?.length) return doc
 
+    revalidateFrontend(req, slug)
     await writeAuditLog(req, {
       action: operation,
       resourceType: 'collection',
@@ -96,6 +99,7 @@ export const auditCollection = (slug: string, titleField?: string) => {
 
   const afterDelete: CollectionAfterDeleteHook = async ({ doc, id, req }) => {
     if (shouldSkip(req)) return doc
+    revalidateFrontend(req, slug)
     await writeAuditLog(req, {
       action: 'delete',
       resourceType: 'collection',
@@ -131,6 +135,7 @@ export const auditGlobal = (slug: string) => {
     const changedFields = diffFields(doc, previousDoc)
     if (!changedFields.length) return doc
 
+    revalidateFrontend(req, slug)
     await writeAuditLog(req, {
       action: 'update',
       resourceType: 'global',
