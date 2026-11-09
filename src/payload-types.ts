@@ -514,6 +514,9 @@ export interface User {
     | null;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -532,7 +535,7 @@ export interface User {
   collection: 'users';
 }
 /**
- * Tick what each role may do. Changes apply immediately to everyone with the role. Super admins can always do everything.
+ * Tick what each role may see (Read) and do. Changes apply immediately to everyone with the role. Super admins can always do everything. The Guest role is what the website and anyone not signed in can do.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "roles".
@@ -541,24 +544,32 @@ export interface Role {
   id: string;
   name: string;
   description?: string | null;
+  /**
+   * Built in. Applies to the website and every request without sign-in. It can only be given Read on content and Create on contact submissions.
+   */
+  isGuest?: boolean | null;
+  permissionsVersion?: number | null;
   permissions?: {
     courses?: {
       create?: boolean | null;
+      read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
     };
     staff?: {
       create?: boolean | null;
+      read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
     };
     services?: {
       create?: boolean | null;
+      read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
     };
     /**
-     * Read = see unpublished drafts. Published posts are always public.
+     * Guests only ever see published posts. Signed-in users with Read also see drafts.
      */
     news?: {
       create?: boolean | null;
@@ -568,26 +579,30 @@ export interface Role {
     };
     testimonials?: {
       create?: boolean | null;
+      read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
     };
     gallery?: {
       create?: boolean | null;
+      read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
     };
     /**
-     * Needed by anyone who uploads images. Deleting media breaks pages that use it.
+     * Images on the website need Guest → Read. Deleting media breaks pages that use it.
      */
     media?: {
       create?: boolean | null;
+      read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
     };
     /**
-     * The website form can always create submissions.
+     * The website contact form needs Guest → Create.
      */
     contactSubmissions?: {
+      create?: boolean | null;
       read?: boolean | null;
       update?: boolean | null;
       delete?: boolean | null;
@@ -606,36 +621,46 @@ export interface Role {
       delete?: boolean | null;
     };
     homePage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     aboutPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     coursesPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     teamPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     servicesPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     newsPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     galleryPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     contactPage?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     entryPopup?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
     /**
      * Navigation, contact details, theme and SEO for the whole site.
      */
     siteSettings?: {
+      read?: boolean | null;
       update?: boolean | null;
     };
   };
@@ -992,6 +1017,9 @@ export interface UsersSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -1014,6 +1042,8 @@ export interface UsersSelect<T extends boolean = true> {
 export interface RolesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
+  isGuest?: T;
+  permissionsVersion?: T;
   permissions?:
     | T
     | {
@@ -1021,6 +1051,7 @@ export interface RolesSelect<T extends boolean = true> {
           | T
           | {
               create?: T;
+              read?: T;
               update?: T;
               delete?: T;
             };
@@ -1028,6 +1059,7 @@ export interface RolesSelect<T extends boolean = true> {
           | T
           | {
               create?: T;
+              read?: T;
               update?: T;
               delete?: T;
             };
@@ -1035,6 +1067,7 @@ export interface RolesSelect<T extends boolean = true> {
           | T
           | {
               create?: T;
+              read?: T;
               update?: T;
               delete?: T;
             };
@@ -1050,6 +1083,7 @@ export interface RolesSelect<T extends boolean = true> {
           | T
           | {
               create?: T;
+              read?: T;
               update?: T;
               delete?: T;
             };
@@ -1057,6 +1091,7 @@ export interface RolesSelect<T extends boolean = true> {
           | T
           | {
               create?: T;
+              read?: T;
               update?: T;
               delete?: T;
             };
@@ -1064,12 +1099,14 @@ export interface RolesSelect<T extends boolean = true> {
           | T
           | {
               create?: T;
+              read?: T;
               update?: T;
               delete?: T;
             };
         contactSubmissions?:
           | T
           | {
+              create?: T;
               read?: T;
               update?: T;
               delete?: T;
@@ -1091,51 +1128,61 @@ export interface RolesSelect<T extends boolean = true> {
         homePage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         aboutPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         coursesPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         teamPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         servicesPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         newsPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         galleryPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         contactPage?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         entryPopup?:
           | T
           | {
+              read?: T;
               update?: T;
             };
         siteSettings?:
           | T
           | {
+              read?: T;
               update?: T;
             };
       };

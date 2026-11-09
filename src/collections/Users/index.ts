@@ -1,6 +1,6 @@
 import { APIError, type Access, type CollectionConfig } from 'payload'
 
-import { can, canUseAdmin, isSuperAdmin, superAdminField } from '@/access'
+import { canUseAdmin, isSuperAdmin, superAdminField, userCan } from '@/access'
 import { allResources, OPERATION_LABELS, OPERATIONS, type ResourceSlug } from '@/access/permissions'
 import { auditCollection, auditLogin } from '@/hooks/audit'
 
@@ -15,19 +15,19 @@ const access: CollectionConfig['access'] = {
   admin: canUseAdmin,
   read: ({ req: { user } }) => {
     if (!user) return false
-    return can(user, 'users', 'read') || { id: { equals: user.id } }
+    return userCan(user, 'users', 'read') || { id: { equals: user.id } }
   },
-  create: ({ req: { user } }) => can(user, 'users', 'create'),
+  create: ({ req: { user } }) => userCan(user, 'users', 'create'),
   update: (({ req: { user } }) => {
     if (!user) return false
     if (isSuperAdmin(user)) return true
     const self = { id: { equals: user.id } }
-    return can(user, 'users', 'update') ? { or: [self, notSuperAdmin] } : self
+    return userCan(user, 'users', 'update') ? { or: [self, notSuperAdmin] } : self
   }) as Access,
   delete: (({ req: { user } }) => {
     if (!user) return false
     if (isSuperAdmin(user)) return true
-    return can(user, 'users', 'delete') ? notSuperAdmin : false
+    return userCan(user, 'users', 'delete') ? notSuperAdmin : false
   }) as Access,
 }
 
@@ -41,8 +41,13 @@ export const Users: CollectionConfig = {
     group: 'System',
     useAsTitle: 'name',
   },
-  // depth 1 loads the role's permissions onto the signed-in user for every access check.
-  auth: { depth: 1 },
+  auth: {
+    // depth 1 loads the role's permissions onto the signed-in user for every access check.
+    depth: 1,
+    // Lets an account (e.g. "Website" or a partner app) call the API with a key instead of a password.
+    // Requests with the key get exactly that account's role and exceptions.
+    useAPIKey: true,
+  },
   hooks: {
     ...audit,
     afterLogin: [auditLogin],
@@ -87,6 +92,8 @@ export const Users: CollectionConfig = {
       type: 'relationship',
       relationTo: 'roles',
       index: true,
+      // Guest is for visitors without an account, never assigned to a person.
+      filterOptions: { isGuest: { not_equals: true } },
       access: { create: superAdminField, update: superAdminField },
       admin: {
         position: 'sidebar',

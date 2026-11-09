@@ -26,8 +26,11 @@ export const News: CollectionConfig = {
   labels: { singular: 'News post', plural: 'News' },
   access: {
     ...access,
-    // Everyone sees published posts; users whose role grants News → Read also see drafts.
-    read: (args) => (can(args.req.user, 'news', 'read') ? true : { _status: { equals: 'published' } }),
+    // Signed-in users with News → Read see drafts too; guests with Read see published posts only.
+    read: async ({ req }) => {
+      if (!(await can(req, 'news', 'read'))) return false
+      return req.user ? true : { _status: { equals: 'published' } }
+    },
   },
   admin: {
     defaultColumns: ['title', 'publishedAt', '_status'],
