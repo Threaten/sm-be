@@ -76,6 +76,7 @@ export interface Config {
     media: Media;
     gallery: Gallery;
     users: User;
+    roles: Role;
     'audit-logs': AuditLog;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -93,6 +94,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
     'audit-logs': AuditLogsSelect<false> | AuditLogsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -472,9 +474,44 @@ export interface User {
   id: string;
   name: string;
   /**
-   * What this person can do is defined in src/access/permissions.ts.
+   * Can do everything, including managing roles. Role and exceptions are ignored.
    */
-  role: 'super-admin' | 'editor' | 'staff';
+  isSuperAdmin?: boolean | null;
+  /**
+   * What this person can do. Edit roles under System → Roles.
+   */
+  role?: (string | null) | Role;
+  /**
+   * Allow or deny a single action for this person only, overriding their role. Leave empty to use the role as is.
+   */
+  permissionExceptions?:
+    | {
+        resource:
+          | 'courses'
+          | 'staff'
+          | 'services'
+          | 'news'
+          | 'testimonials'
+          | 'gallery'
+          | 'media'
+          | 'contact-submissions'
+          | 'users'
+          | 'audit-logs'
+          | 'home-page'
+          | 'about-page'
+          | 'courses-page'
+          | 'team-page'
+          | 'services-page'
+          | 'news-page'
+          | 'gallery-page'
+          | 'contact-page'
+          | 'entry-popup'
+          | 'site-settings';
+        operation: 'create' | 'read' | 'update' | 'delete';
+        effect: 'allow' | 'deny';
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -493,6 +530,117 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * Tick what each role may do. Changes apply immediately to everyone with the role. Super admins can always do everything.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: string;
+  name: string;
+  description?: string | null;
+  permissions?: {
+    courses?: {
+      create?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    staff?: {
+      create?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    services?: {
+      create?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    /**
+     * Read = see unpublished drafts. Published posts are always public.
+     */
+    news?: {
+      create?: boolean | null;
+      read?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    testimonials?: {
+      create?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    gallery?: {
+      create?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    /**
+     * Needed by anyone who uploads images. Deleting media breaks pages that use it.
+     */
+    media?: {
+      create?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    /**
+     * The website form can always create submissions.
+     */
+    contactSubmissions?: {
+      read?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    /**
+     * Other people's accounts. Everyone can always edit their own. Only super admins can change roles and exceptions.
+     */
+    users?: {
+      create?: boolean | null;
+      read?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    auditLogs?: {
+      read?: boolean | null;
+      delete?: boolean | null;
+    };
+    homePage?: {
+      update?: boolean | null;
+    };
+    aboutPage?: {
+      update?: boolean | null;
+    };
+    coursesPage?: {
+      update?: boolean | null;
+    };
+    teamPage?: {
+      update?: boolean | null;
+    };
+    servicesPage?: {
+      update?: boolean | null;
+    };
+    newsPage?: {
+      update?: boolean | null;
+    };
+    galleryPage?: {
+      update?: boolean | null;
+    };
+    contactPage?: {
+      update?: boolean | null;
+    };
+    entryPopup?: {
+      update?: boolean | null;
+    };
+    /**
+     * Navigation, contact details, theme and SEO for the whole site.
+     */
+    siteSettings?: {
+      update?: boolean | null;
+    };
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -576,6 +724,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: string | Role;
       } | null)
     | ({
         relationTo: 'audit-logs';
@@ -828,7 +980,16 @@ export interface GallerySelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  isSuperAdmin?: T;
   role?: T;
+  permissionExceptions?:
+    | T
+    | {
+        resource?: T;
+        operation?: T;
+        effect?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -845,6 +1006,141 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  permissions?:
+    | T
+    | {
+        courses?:
+          | T
+          | {
+              create?: T;
+              update?: T;
+              delete?: T;
+            };
+        staff?:
+          | T
+          | {
+              create?: T;
+              update?: T;
+              delete?: T;
+            };
+        services?:
+          | T
+          | {
+              create?: T;
+              update?: T;
+              delete?: T;
+            };
+        news?:
+          | T
+          | {
+              create?: T;
+              read?: T;
+              update?: T;
+              delete?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              create?: T;
+              update?: T;
+              delete?: T;
+            };
+        gallery?:
+          | T
+          | {
+              create?: T;
+              update?: T;
+              delete?: T;
+            };
+        media?:
+          | T
+          | {
+              create?: T;
+              update?: T;
+              delete?: T;
+            };
+        contactSubmissions?:
+          | T
+          | {
+              read?: T;
+              update?: T;
+              delete?: T;
+            };
+        users?:
+          | T
+          | {
+              create?: T;
+              read?: T;
+              update?: T;
+              delete?: T;
+            };
+        auditLogs?:
+          | T
+          | {
+              read?: T;
+              delete?: T;
+            };
+        homePage?:
+          | T
+          | {
+              update?: T;
+            };
+        aboutPage?:
+          | T
+          | {
+              update?: T;
+            };
+        coursesPage?:
+          | T
+          | {
+              update?: T;
+            };
+        teamPage?:
+          | T
+          | {
+              update?: T;
+            };
+        servicesPage?:
+          | T
+          | {
+              update?: T;
+            };
+        newsPage?:
+          | T
+          | {
+              update?: T;
+            };
+        galleryPage?:
+          | T
+          | {
+              update?: T;
+            };
+        contactPage?:
+          | T
+          | {
+              update?: T;
+            };
+        entryPopup?:
+          | T
+          | {
+              update?: T;
+            };
+        siteSettings?:
+          | T
+          | {
+              update?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

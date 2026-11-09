@@ -1,83 +1,147 @@
 /**
- * Central permission matrix for every collection and global.
+ * Every resource whose access can be granted from the admin panel.
  *
- * This is the ONE place to decide what each role may do. Collections and
- * globals never hard-code access rules; they call `collectionAccess(slug)` or
- * `globalAccess(slug)`, which read from the tables below.
+ * What each role may do is stored in the database (Roles collection) and can
+ * be changed at any time in the admin panel; individual users can also get
+ * allow/deny exceptions (Users → Permission exceptions). This file only lists
+ * WHICH actions exist for each resource, plus the fixed rules that no role can
+ * change:
  *
- * Rules:
- * - `super-admin` can always do everything. It is never listed below.
- * - `'public'` means anyone, including logged-out website visitors.
- * - An array lists the roles (besides super-admin) that are allowed.
- * - An empty array means super-admin only.
- *
- * The values below are a starting proposal. See PERMISSIONS.md for the
- * decisions that still need to be made.
+ * - Super admins (a checkbox on the user) can always do everything.
+ * - Website content is always publicly readable, so the site keeps working.
+ *   Its "read" is therefore not offered, except News, where "read" means
+ *   seeing unpublished drafts.
+ * - Anyone may create a contact submission (the website form).
+ * - Audit logs are only ever written by the server.
+ * - Every signed-in user can read and edit their own account.
  */
 
-export const ROLES = ['super-admin', 'editor', 'staff'] as const
-export type Role = (typeof ROLES)[number]
-export type StaffRole = Exclude<Role, 'super-admin'>
+export const OPERATIONS = ['create', 'read', 'update', 'delete'] as const
+export type Operation = (typeof OPERATIONS)[number]
 
-export const ROLE_LABELS: Record<Role, string> = {
-  'super-admin': 'Super admin',
-  editor: 'Editor',
-  staff: 'Staff',
+export const OPERATION_LABELS: Record<Operation, string> = {
+  create: 'Create',
+  read: 'Read',
+  update: 'Update',
+  delete: 'Delete',
 }
 
-type Rule = 'public' | StaffRole[]
-
-export type CollectionRules = {
-  read: Rule
-  create: Rule
-  update: Rule
-  delete: Rule
+type ResourceDef = {
+  /** Field name in the database. camelCase, because slugs with "-" are not valid field names. */
+  key: string
+  label: string
+  operations: readonly Operation[]
+  /** Shown under the resource in the role editor. */
+  note?: string
 }
 
-export type GlobalRules = {
-  read: Rule
-  update: Rule
-}
+const CONTENT_OPS = ['create', 'update', 'delete'] as const
+const PAGE_OPS = ['update'] as const
 
-const EDITORS: StaffRole[] = ['editor']
-const TEAM: StaffRole[] = ['editor', 'staff']
-const NOBODY: StaffRole[] = []
+export const collectionResources = {
+  courses: { key: 'courses', label: 'Courses', operations: CONTENT_OPS },
+  staff: { key: 'staff', label: 'Instructors', operations: CONTENT_OPS },
+  services: { key: 'services', label: 'Services', operations: CONTENT_OPS },
+  news: {
+    key: 'news',
+    label: 'News',
+    operations: OPERATIONS,
+    note: 'Read = see unpublished drafts. Published posts are always public.',
+  },
+  testimonials: { key: 'testimonials', label: 'Testimonials', operations: CONTENT_OPS },
+  gallery: { key: 'gallery', label: 'Gallery', operations: CONTENT_OPS },
+  media: {
+    key: 'media',
+    label: 'Media',
+    operations: CONTENT_OPS,
+    note: 'Needed by anyone who uploads images. Deleting media breaks pages that use it.',
+  },
+  'contact-submissions': {
+    key: 'contactSubmissions',
+    label: 'Contact submissions',
+    operations: ['read', 'update', 'delete'],
+    note: 'The website form can always create submissions.',
+  },
+  users: {
+    key: 'users',
+    label: 'Users',
+    operations: OPERATIONS,
+    note: "Other people's accounts. Everyone can always edit their own. Only super admins can change roles and exceptions.",
+  },
+  'audit-logs': { key: 'auditLogs', label: 'Audit logs', operations: ['read', 'delete'] },
+} satisfies Record<string, ResourceDef>
 
-export const collectionPermissions = {
-  // Website content
-  courses: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
-  staff: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
-  services: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
-  // Visitors see published posts only; drafts need a signed-in role (see News.ts).
-  news: { read: 'public', create: EDITORS, update: EDITORS, delete: EDITORS },
-  testimonials: { read: 'public', create: TEAM, update: TEAM, delete: EDITORS },
-  gallery: { read: 'public', create: TEAM, update: TEAM, delete: EDITORS },
-  media: { read: 'public', create: TEAM, update: TEAM, delete: EDITORS },
+export const globalResources = {
+  'home-page': { key: 'homePage', label: 'Home page', operations: PAGE_OPS },
+  'about-page': { key: 'aboutPage', label: 'About page', operations: PAGE_OPS },
+  'courses-page': { key: 'coursesPage', label: 'Courses page', operations: PAGE_OPS },
+  'team-page': { key: 'teamPage', label: 'Team page', operations: PAGE_OPS },
+  'services-page': { key: 'servicesPage', label: 'Services page', operations: PAGE_OPS },
+  'news-page': { key: 'newsPage', label: 'News page', operations: PAGE_OPS },
+  'gallery-page': { key: 'galleryPage', label: 'Gallery page', operations: PAGE_OPS },
+  'contact-page': { key: 'contactPage', label: 'Contact page', operations: PAGE_OPS },
+  'entry-popup': { key: 'entryPopup', label: 'Entry popup', operations: PAGE_OPS },
+  'site-settings': {
+    key: 'siteSettings',
+    label: 'Site settings',
+    operations: PAGE_OPS,
+    note: 'Navigation, contact details, theme and SEO for the whole site.',
+  },
+} satisfies Record<string, ResourceDef>
 
-  // Leads. `create` stays public so the website contact form works.
-  'contact-submissions': { read: TEAM, create: 'public', update: TEAM, delete: EDITORS },
+export type PermissionCollectionSlug = keyof typeof collectionResources
+export type PermissionGlobalSlug = keyof typeof globalResources
+export type ResourceSlug = PermissionCollectionSlug | PermissionGlobalSlug
 
-  // System. Audit logs are written by hooks only, so create/update are closed
-  // to everyone, super-admin included (see AuditLogs.ts).
-  'audit-logs': { read: NOBODY, create: NOBODY, update: NOBODY, delete: NOBODY },
+export const allResources: Record<ResourceSlug, ResourceDef> = { ...collectionResources, ...globalResources }
 
-  // Users: everyone can always read and update their own account (see
-  // Users/index.ts). These rules control access to OTHER people's accounts.
-  users: { read: NOBODY, create: NOBODY, update: NOBODY, delete: NOBODY },
-} satisfies Record<string, CollectionRules>
+/** Stored shape: `{ courses: { create: true, update: false, ... }, homePage: { update: true }, ... }`. */
+export type PermissionSet = Record<string, Partial<Record<Operation, boolean>> | undefined>
 
-export const globalPermissions = {
-  'site-settings': { read: 'public', update: NOBODY },
-  'home-page': { read: 'public', update: EDITORS },
-  'about-page': { read: 'public', update: EDITORS },
-  'courses-page': { read: 'public', update: EDITORS },
-  'team-page': { read: 'public', update: EDITORS },
-  'services-page': { read: 'public', update: EDITORS },
-  'news-page': { read: 'public', update: EDITORS },
-  'gallery-page': { read: 'public', update: EDITORS },
-  'contact-page': { read: 'public', update: EDITORS },
-  'entry-popup': { read: 'public', update: TEAM },
-} satisfies Record<string, GlobalRules>
+/**
+ * Starting roles, created automatically on a database with no roles yet
+ * (and used when converting the old hard-coded editor/staff roles).
+ * After that they live in the database and are edited in the admin panel.
+ */
+const grant = (
+  entries: [ResourceSlug, readonly Operation[]][],
+): PermissionSet =>
+  Object.fromEntries(
+    entries.map(([slug, ops]) => [allResources[slug].key, Object.fromEntries(ops.map((op) => [op, true]))]),
+  )
 
-export type PermissionCollectionSlug = keyof typeof collectionPermissions
-export type PermissionGlobalSlug = keyof typeof globalPermissions
+const ALL_PAGES = (Object.keys(globalResources) as PermissionGlobalSlug[])
+  .filter((slug) => slug !== 'site-settings')
+  .map((slug): [ResourceSlug, readonly Operation[]] => [slug, PAGE_OPS])
+
+export const DEFAULT_ROLES: { legacy: string; name: string; description: string; permissions: PermissionSet }[] = [
+  {
+    legacy: 'editor',
+    name: 'Editor',
+    description: 'Marketing / content lead: manages all website content and pages.',
+    permissions: grant([
+      ['courses', CONTENT_OPS],
+      ['staff', CONTENT_OPS],
+      ['services', CONTENT_OPS],
+      ['news', OPERATIONS],
+      ['testimonials', CONTENT_OPS],
+      ['gallery', CONTENT_OPS],
+      ['media', CONTENT_OPS],
+      ['contact-submissions', ['read', 'update', 'delete']],
+      ...ALL_PAGES,
+    ]),
+  },
+  {
+    legacy: 'staff',
+    name: 'Staff',
+    description: 'Front desk / instructors: testimonials, gallery photos, leads and the entry popup.',
+    permissions: grant([
+      ['news', ['read']],
+      ['testimonials', ['create', 'update']],
+      ['gallery', ['create', 'update']],
+      ['media', ['create', 'update']],
+      ['contact-submissions', ['read', 'update']],
+      ['entry-popup', PAGE_OPS],
+    ]),
+  },
+]

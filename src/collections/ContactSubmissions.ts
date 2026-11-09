@@ -6,7 +6,11 @@ import { auditCollection } from '@/hooks/audit'
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
   labels: { singular: 'Contact submission', plural: 'Contact submissions' },
-  access: collectionAccess('contact-submissions'),
+  access: {
+    ...collectionAccess('contact-submissions'),
+    // The website contact form posts here without signing in.
+    create: () => true,
+  },
   admin: {
     defaultColumns: ['name', 'phone', 'courses', 'createdAt'],
     group: 'Leads',

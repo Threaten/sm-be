@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url'
 import { AuditLogs } from './collections/AuditLogs'
 import { ContactSubmissions } from './collections/ContactSubmissions'
 import { Courses } from './collections/Courses'
+import { Roles } from './collections/Roles'
 import { Gallery } from './collections/Gallery'
 import { Media } from './collections/Media'
 import { News } from './collections/News'
@@ -26,6 +27,7 @@ import { ServicesPage } from './globals/ServicesPage'
 import { SiteSettings } from './globals/SiteSettings'
 import { TeamPage } from './globals/TeamPage'
 import { getServerSideURL } from './utilities/getURL'
+import { syncRoles } from './access/syncRoles'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -75,6 +77,7 @@ export default buildConfig({
     Media,
     Gallery,
     Users,
+    Roles,
     AuditLogs,
   ],
   cors: {
@@ -104,6 +107,8 @@ export default buildConfig({
       },
     },
   },
+  // Creates the starting roles and converts users from the old hard-coded roles (src/access/syncRoles.ts).
+  onInit: syncRoles,
   secret: process.env.PAYLOAD_SECRET,
   serverURL,
   sharp,

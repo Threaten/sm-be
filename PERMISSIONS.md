@@ -1,79 +1,50 @@
 # Roles & permissions
 
-Every access rule lives in **one file**: [`src/access/permissions.ts`](src/access/permissions.ts).
-Collections and globals never hard-code access; they read that matrix. To change what a role may do,
-edit the matrix and restart the server. No other file needs touching.
+Roles and permissions are managed **in the admin panel**, not in code. Changes apply on the next request; no restart.
 
-## The three roles
+- **System → Roles**: create a role, then tick Create / Read / Update / Delete for each content type and page.
+- **System → Users**: give each person a role, tick **Super admin**, or add **Permission exceptions**
+  (allow or deny one action for that person only, overriding their role).
 
-| Role | Intended for | Fixed rules (not in the matrix) |
-| --- | --- | --- |
-| **Super admin** | Owner / tech lead | Can do everything, always. Only role that can change anyone's role. |
-| **Editor** | Marketing / content lead | Starting proposal below. |
-| **Staff** | Front desk, instructors | Starting proposal below. |
+How a request is decided:
 
-Fixed rules that apply regardless of the matrix:
+1. **Super admin** → allowed, always.
+2. A **permission exception** on the user for that resource and action → its Allow / Deny.
+3. Otherwise → the checkbox on the user's **role**. No role → nothing beyond the fixed rules below.
 
-- Every signed-in user can open the admin panel and **read and edit their own account** (name, email, password). They can never change their own role.
-- The **first account ever created** (on a fresh database) becomes super admin automatically.
-- **Audit logs** can never be created or edited through the admin or API, by anyone. Only the server's hooks write them.
-- A user with a missing or unknown role is treated as **staff** (lowest access).
+## Fixed rules (cannot be changed from the admin)
 
-## Current proposal: please decide
+- Website content (courses, instructors, services, news, testimonials, gallery, media, all pages and site settings)
+  is **always publicly readable**, so the website keeps working. That is why those resources have no Read checkbox.
+  News is the exception: its Read means "see unpublished drafts"; published posts stay public.
+- **Anyone can create a contact submission** (the website form).
+- **Audit logs** are only written by the server; nobody can create or edit them.
+- Every signed-in user can open the admin panel and **read and edit their own account**.
+- **Only super admins** can manage roles or change anyone's role, super admin checkbox or exceptions,
+  so nobody can grant themselves more access.
+- People with Users access can manage other accounts, but **never a super admin's** (they could otherwise
+  reset its password).
+- A super admin **cannot remove their own** super admin checkbox; another super admin has to.
+- A role that is **still assigned to users cannot be deleted**.
+- The **first account** on a fresh database becomes super admin automatically.
 
-`public` means logged-out website visitors too. `✓` = allowed, `—` = not allowed. Super admin is always ✓.
+## Starting roles
 
-### Collections
+On a database with no roles, the server creates **Editor** and **Staff** with the rules that used to be hard-coded
+(Editor: all website content, leads and pages except site settings; Staff: testimonials, gallery, media, leads,
+news drafts and the entry popup). Users on the old text roles are converted on startup:
+`super-admin` → Super admin checkbox, `editor` / `staff` → the matching role, anything else → Staff.
+See [`src/access/syncRoles.ts`](src/access/syncRoles.ts). It runs on every start and is safe to repeat.
 
-| Collection | Action | Editor | Staff | Decide / notes |
-| --- | --- | :-: | :-: | --- |
-| Courses | read | public | public | Must stay public (website). |
-| | create / update / delete | ✓ | — | Should staff be able to update intake dates and prices? |
-| Instructors (`staff`) | read | public | public | Must stay public. |
-| | create / update / delete | ✓ | — | Should instructors edit their own profile? (needs an owner field) |
-| Services | read | public | public | Must stay public. |
-| | create / update / delete | ✓ | — | |
-| News | read | public | public | Visitors see published posts only; drafts need a signed-in role. |
-| | create / update / delete | ✓ | — | Should staff draft posts for an editor to publish? |
-| Testimonials | read | public | public | Must stay public. |
-| | create / update | ✓ | ✓ | Staff collect quotes from students. |
-| | delete | ✓ | — | |
-| Gallery | read | public | public | Must stay public. |
-| | create / update | ✓ | ✓ | Staff post class photos. |
-| | delete | ✓ | — | |
-| Media | read | public | public | Must stay public (images). |
-| | create / update | ✓ | ✓ | Needed for anyone who adds gallery photos. |
-| | delete | ✓ | — | Deleting media breaks pages that use it. |
-| Contact submissions | create | public | public | Must stay public (website form). |
-| | read / update | ✓ | ✓ | Staff follow up on leads. |
-| | delete | ✓ | — | |
-| Users | read / create / update / delete **others** | — | — | Own account always allowed (see above). |
-| Audit logs | read / delete | — | — | Super admin only. Give editors read access? |
+## For developers
 
-### Globals
-
-| Global | read | Editor update | Staff update | Decide / notes |
-| --- | --- | :-: | :-: | --- |
-| Home / About / Courses / Team / Services / News / Gallery / Contact page | public | ✓ | — | |
-| Entry popup | public | ✓ | ✓ | Staff run short promotions. |
-| Site settings (nav, contact info, theme, SEO) | public | — | — | Super admin only. Editors would usually need contact info; split it out if so. |
-
-## How to change a rule
-
-```ts
-// src/access/permissions.ts
-courses: { read: 'public', create: EDITORS, update: TEAM, delete: EDITORS },
-//                                            ^^^^ now staff can update courses too
-```
-
-Building blocks: `EDITORS` (`['editor']`), `TEAM` (`['editor', 'staff']`), `NOBODY` (`[]`, super admin only),
-`'public'`, or any custom array such as `['staff']`.
-
-Adding a new role: add it to `ROLES` and `ROLE_LABELS` in the same file, then use it in the rules.
-The role dropdown on Users updates automatically.
-
-Field-level exceptions (for example "staff may edit `nextIntake` but nothing else on a course") are not in the
-matrix. They go on the field itself as `access: { update: ... }`. Ask for this if you want it.
+- Which actions exist for each resource: [`src/access/permissions.ts`](src/access/permissions.ts).
+  Adding a new collection or global: add it there, then use `collectionAccess(slug)` / `globalAccess(slug)` in its
+  config. The role editor and the exception dropdown pick it up automatically.
+- The check itself: `can(user, resource, action)` in [`src/access/index.ts`](src/access/index.ts).
+- Users has `auth.depth: 1`, so the role (with its checkboxes) is loaded with the signed-in user on every request.
+- Field-level exceptions (for example "staff may edit `nextIntake` but nothing else on a course") are not covered;
+  they go on the field itself as `access: { update: ... }`.
 
 ## Audit log
 

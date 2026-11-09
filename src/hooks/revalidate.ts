@@ -1,7 +1,7 @@
 import type { PayloadRequest } from 'payload'
 
 /** Collections that never appear on the public site; saving them needs no refresh. */
-const PRIVATE_RESOURCES = new Set(['users', 'contact-submissions', 'audit-logs'])
+const PRIVATE_RESOURCES = new Set(['users', 'roles', 'contact-submissions', 'audit-logs'])
 
 /**
  * Tells the frontend to drop its cached CMS data so an edit shows up on the next

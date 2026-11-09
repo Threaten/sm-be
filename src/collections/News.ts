@@ -1,7 +1,7 @@
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
-import { collectionAccess } from '@/access'
+import { can, collectionAccess } from '@/access'
 import { EmojiPasteFeature } from '@/components/admin/richText/EmojiPaste'
 import { accentField } from '@/fields/accent'
 import { slugField } from '@/fields/slug'
@@ -26,8 +26,8 @@ export const News: CollectionConfig = {
   labels: { singular: 'News post', plural: 'News' },
   access: {
     ...access,
-    // Visitors only ever see published posts; signed-in users with read access also see drafts.
-    read: (args) => (args.req.user ? access.read(args) : { _status: { equals: 'published' } }),
+    // Everyone sees published posts; users whose role grants News → Read also see drafts.
+    read: (args) => (can(args.req.user, 'news', 'read') ? true : { _status: { equals: 'published' } }),
   },
   admin: {
     defaultColumns: ['title', 'publishedAt', '_status'],
