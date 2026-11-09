@@ -21,13 +21,29 @@ const resourceFields = (resources: Record<string, Resource>): Field[] =>
     fields: [
       {
         type: 'row',
-        fields: resource.operations.map((operation) => ({
-          name: operation,
-          label: OPERATION_LABELS[operation],
-          type: 'checkbox',
-          defaultValue: false,
-          admin: { width: '25%' },
-        })),
+        fields: [
+          {
+            name: 'all',
+            type: 'ui',
+            admin: {
+              components: {
+                Field: {
+                  path: '@/components/admin/SelectAllPermissions#SelectAllPermissions',
+                  clientProps: { operations: [...resource.operations] },
+                },
+              },
+            },
+          },
+          ...resource.operations.map(
+            (operation): Field => ({
+              name: operation,
+              label: OPERATION_LABELS[operation],
+              type: 'checkbox',
+              defaultValue: false,
+              admin: { width: '22%' },
+            }),
+          ),
+        ],
       },
     ],
   }))
