@@ -1,6 +1,6 @@
 import type { Payload } from 'payload'
 
-import { DEFAULT_ROLES, GUEST_ROLE, PERMISSIONS_VERSION, upgradeToV2, type PermissionSet } from './permissions'
+import { DEFAULT_ROLES, GUEST_ROLE, PERMISSIONS_VERSION, upgradeToV2, upgradeToV3, type PermissionSet } from './permissions'
 
 const context = { skipAudit: true }
 
@@ -9,7 +9,7 @@ const context = { skipAudit: true }
  *
  * 1. Creates the built-in Guest role if missing, with exactly what the website needs.
  * 2. A database with no other roles gets the starting Editor and Staff roles.
- * 3. Roles saved before every resource had a Read checkbox are upgraded so nobody loses access.
+ * 3. Roles saved by an older version are upgraded so nobody loses access (Read checkboxes, Videos).
  * 4. Users still on the old hard-coded roles (`role: 'editor' | 'staff' | 'super-admin'`
  *    stored as text) are converted: super-admin → the Super admin checkbox,
  *    editor / staff → a link to the matching role. Unknown values get Staff.
@@ -65,30 +65,27 @@ export async function syncRoles(payload: Payload) {
     }
   }
 
-  const outdated = await payload.find({
-    collection: 'roles',
-    where: {
-      and: [
-        { isGuest: { not_equals: true } },
-        { or: [{ permissionsVersion: { exists: false } }, { permissionsVersion: { less_than: 2 } }] },
-      ],
-    },
-    pagination: false,
-    depth: 0,
-    overrideAccess: true,
-  })
-  for (const role of outdated.docs) {
+  // Read the raw documents: Payload fills in defaults on read (missing checkboxes → false, missing
+  // version → current), which would hide exactly what this upgrade needs to see.
+  const rawRoles = payload.db.collections.roles.collection
+  const outdated = await rawRoles
+    .find({ $or: [{ permissionsVersion: { $exists: false } }, { permissionsVersion: { $lt: PERMISSIONS_VERSION } }] })
+    .toArray()
+  for (const role of outdated) {
+    const version = typeof role.permissionsVersion === 'number' ? role.permissionsVersion : 1
+    let permissions = (role.permissions ?? {}) as PermissionSet
+    // v2: every resource got a Read checkbox (the Guest role was created at v2, so it never needs this).
+    if (version < 2 && !role.isGuest) permissions = upgradeToV2(permissions)
+    // v3: the Videos collection; it inherits the role's Media access.
+    if (version < 3) permissions = upgradeToV3(permissions)
     await payload.update({
       collection: 'roles',
-      id: role.id,
-      data: {
-        permissions: upgradeToV2(role.permissions as PermissionSet),
-        permissionsVersion: PERMISSIONS_VERSION,
-      },
+      id: String(role._id),
+      data: { permissions, permissionsVersion: PERMISSIONS_VERSION },
       overrideAccess: true,
       context,
     })
-    payload.logger.info(`[roles] upgraded "${role.name}": Read turned on for website content it could already see`)
+    payload.logger.info(`[roles] upgraded "${role.name}" to permissions v${PERMISSIONS_VERSION}`)
   }
 
   // The old values are plain strings, which the relationship field cannot read, so convert them in Mongo directly.

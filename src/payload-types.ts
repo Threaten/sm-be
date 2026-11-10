@@ -74,6 +74,7 @@ export interface Config {
     testimonials: Testimonial;
     'contact-submissions': ContactSubmission;
     media: Media;
+    videos: Video;
     gallery: Gallery;
     users: User;
     roles: Role;
@@ -92,6 +93,7 @@ export interface Config {
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    videos: VideosSelect<false> | VideosSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
@@ -179,7 +181,14 @@ export interface Course {
    * Who the course is for.
    */
   level: string;
+  /**
+   * One or two sentences at the top of the course page and in search results.
+   */
   summary: string;
+  /**
+   * Optional. The longer introduction in the "About this course" section. Each line is a paragraph; lines starting with "-" become bullet points.
+   */
+  description?: string | null;
   image: string | Media;
   imageCaption: string;
   duration: string;
@@ -198,6 +207,19 @@ export interface Course {
    * Optional. When set, the regular price is crossed out.
    */
   promotionPrice?: string | null;
+  outcomes?:
+    | {
+        /**
+         * For example "Chứng nhận hoàn thành khóa học".
+         */
+        title: string;
+        /**
+         * Optional detail. Lines starting with "-" become bullet points.
+         */
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   syllabus?:
     | {
         title: string;
@@ -455,6 +477,34 @@ export interface ContactSubmission {
   createdAt: string;
 }
 /**
+ * MP4 (H.264) plays in every browser; export as MP4 when you can. Keep files small (under ~100 MB): visitors download what they watch.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: string;
+  /**
+   * What the video shows. Read out by screen readers and used as the player label.
+   */
+  title: string;
+  /**
+   * Optional. Shown before the video plays. Without it, browsers show the first frame.
+   */
+  poster?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "gallery".
  */
@@ -494,6 +544,7 @@ export interface User {
           | 'testimonials'
           | 'gallery'
           | 'media'
+          | 'videos'
           | 'contact-submissions'
           | 'users'
           | 'audit-logs'
@@ -593,6 +644,15 @@ export interface Role {
      * Images on the website need Guest → Read. Deleting media breaks pages that use it.
      */
     media?: {
+      create?: boolean | null;
+      read?: boolean | null;
+      update?: boolean | null;
+      delete?: boolean | null;
+    };
+    /**
+     * Videos in news posts need Guest → Read to play on the website.
+     */
+    videos?: {
       create?: boolean | null;
       read?: boolean | null;
       update?: boolean | null;
@@ -743,6 +803,10 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
+        relationTo: 'videos';
+        value: string | Video;
+      } | null)
+    | ({
         relationTo: 'gallery';
         value: string | Gallery;
       } | null)
@@ -811,6 +875,7 @@ export interface CoursesSelect<T extends boolean = true> {
   accent?: T;
   level?: T;
   summary?: T;
+  description?: T;
   image?: T;
   imageCaption?: T;
   duration?: T;
@@ -820,6 +885,13 @@ export interface CoursesSelect<T extends boolean = true> {
   schedule?: T;
   price?: T;
   promotionPrice?: T;
+  outcomes?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
   syllabus?:
     | T
     | {
@@ -990,6 +1062,25 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos_select".
+ */
+export interface VideosSelect<T extends boolean = true> {
+  title?: T;
+  poster?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "gallery_select".
  */
 export interface GallerySelect<T extends boolean = true> {
@@ -1096,6 +1187,14 @@ export interface RolesSelect<T extends boolean = true> {
               delete?: T;
             };
         media?:
+          | T
+          | {
+              create?: T;
+              read?: T;
+              update?: T;
+              delete?: T;
+            };
+        videos?:
           | T
           | {
               create?: T;
@@ -1449,6 +1548,11 @@ export interface CoursesPage {
     tuitionLabel: string;
     classSizeLabel: string;
     reserveLabel: string;
+    aboutEyebrow?: string | null;
+    aboutTitle?: string | null;
+    outcomesEyebrow?: string | null;
+    outcomesTitle?: string | null;
+    outcomesCopy?: string | null;
     syllabusEyebrow: string;
     syllabusTitle: string;
     syllabusCopy: string;
@@ -2073,6 +2177,11 @@ export interface CoursesPageSelect<T extends boolean = true> {
         tuitionLabel?: T;
         classSizeLabel?: T;
         reserveLabel?: T;
+        aboutEyebrow?: T;
+        aboutTitle?: T;
+        outcomesEyebrow?: T;
+        outcomesTitle?: T;
+        outcomesCopy?: T;
         syllabusEyebrow?: T;
         syllabusTitle?: T;
         syllabusCopy?: T;

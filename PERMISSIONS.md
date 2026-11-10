@@ -58,6 +58,8 @@ with only what it needs, and use its key.
 - creates **Editor** and **Staff** on a database with no other roles;
 - upgrades roles saved before Read existed by turning Read on for all website content and pages, which
   every signed-in user could already see, so nobody loses access;
+- gives roles saved before the Videos collection existed the same Videos access they have on Media
+  (Guest included, so videos play on the website);
 - converts users on the old text roles: `super-admin` → Super admin checkbox, `editor` / `staff` → the
   matching role, anything else → Staff.
 

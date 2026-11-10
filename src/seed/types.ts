@@ -30,6 +30,10 @@ export type Course = {
   schedule: string;
   price: string;
   promotionPrice?: string | null;
+  /** Longer introduction for the "About this course" section. Optional. */
+  description?: string | null;
+  /** What students walk away with. Optional; the section is hidden when empty. */
+  outcomes?: { title: string; description?: string | null }[];
   syllabus: { title: string; description?: string | null }[];
 };
 
@@ -121,6 +125,11 @@ export type CoursesPage = {
     tuitionLabel: string;
     classSizeLabel: string;
     reserveLabel: string;
+    aboutEyebrow: string;
+    aboutTitle: string;
+    outcomesEyebrow: string;
+    outcomesTitle: string;
+    outcomesCopy: string;
     syllabusEyebrow: string;
     syllabusTitle: string;
     syllabusCopy: string;

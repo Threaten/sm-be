@@ -33,7 +33,21 @@ export const Courses: CollectionConfig = {
               required: true,
               admin: { description: 'Who the course is for.' },
             },
-            { name: 'summary', type: 'textarea', required: true },
+            {
+              name: 'summary',
+              type: 'textarea',
+              required: true,
+              admin: { description: 'One or two sentences at the top of the course page and in search results.' },
+            },
+            {
+              name: 'description',
+              type: 'textarea',
+              admin: {
+                description:
+                  'Optional. The longer introduction in the "About this course" section. Each line is a paragraph; lines starting with "-" become bullet points.',
+                rows: 8,
+              },
+            },
             { name: 'image', type: 'upload', relationTo: 'media', required: true },
             { name: 'imageCaption', type: 'text', required: true },
           ],
@@ -76,6 +90,33 @@ export const Courses: CollectionConfig = {
                   label: 'Promotion price',
                   type: 'text',
                   admin: { description: 'Optional. When set, the regular price is crossed out.' },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: "What you'll earn",
+          description:
+            'What students walk away with: skills, certificates, career opportunities. Leave empty to hide the section.',
+          fields: [
+            {
+              name: 'outcomes',
+              label: 'Outcomes',
+              type: 'array',
+              labels: { singular: 'Outcome', plural: 'Outcomes' },
+              admin: { initCollapsed: true },
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  required: true,
+                  admin: { description: 'For example "Chứng nhận hoàn thành khóa học".' },
+                },
+                {
+                  name: 'description',
+                  type: 'textarea',
+                  admin: { description: 'Optional detail. Lines starting with "-" become bullet points.' },
                 },
               ],
             },

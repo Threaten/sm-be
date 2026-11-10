@@ -1,4 +1,4 @@
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
 import { can, collectionAccess } from '@/access'
@@ -79,7 +79,24 @@ export const News: CollectionConfig = {
               required: true,
               editor: lexicalEditor({
                 features: ({ defaultFeatures }) => [
-                  ...defaultFeatures.filter((feature) => !UNSUPPORTED_FEATURES.has(feature.key)),
+                  ...defaultFeatures.filter(
+                    (feature) => !UNSUPPORTED_FEATURES.has(feature.key) && feature.key !== 'upload',
+                  ),
+                  // Images (Media) and videos (Videos); videos can carry a caption under the player.
+                  UploadFeature({
+                    enabledCollections: ['media', 'videos'],
+                    collections: {
+                      videos: {
+                        fields: [
+                          {
+                            name: 'caption',
+                            type: 'text',
+                            admin: { description: 'Optional line under the video.' },
+                          },
+                        ],
+                      },
+                    },
+                  }),
                   EmojiPasteFeature(),
                 ],
               }),

@@ -62,6 +62,13 @@ export const collectionResources = {
     guest: READ,
     note: 'Images on the website need Guest → Read. Deleting media breaks pages that use it.',
   },
+  videos: {
+    key: 'videos',
+    label: 'Videos',
+    operations: OPERATIONS,
+    guest: READ,
+    note: 'Videos in news posts need Guest → Read to play on the website.',
+  },
   'contact-submissions': {
     key: 'contactSubmissions',
     label: 'Contact submissions',
@@ -109,7 +116,7 @@ const resourceSlugs = Object.keys(allResources) as ResourceSlug[]
 export type PermissionSet = Record<string, Partial<Record<Operation, boolean>> | undefined>
 
 /** Bump when the stored permission shape changes; syncRoles.ts upgrades older roles on startup. */
-export const PERMISSIONS_VERSION = 2
+export const PERMISSIONS_VERSION = 3
 
 const grant = (entries: [ResourceSlug, readonly Operation[]][]): PermissionSet => {
   const set: PermissionSet = {}
@@ -162,6 +169,7 @@ export const DEFAULT_ROLES: { legacy: string; name: string; description: string;
       ['testimonials', OPERATIONS],
       ['gallery', OPERATIONS],
       ['media', OPERATIONS],
+      ['videos', OPERATIONS],
       ['contact-submissions', OPERATIONS],
       ...PAGES_EXCEPT_SETTINGS,
     ]),
@@ -175,6 +183,7 @@ export const DEFAULT_ROLES: { legacy: string; name: string; description: string;
       ['testimonials', ['create', 'update']],
       ['gallery', ['create', 'update']],
       ['media', ['create', 'update']],
+      ['videos', ['create', 'update']],
       ['contact-submissions', ['read', 'update']],
       ['entry-popup', PAGE_OPS],
     ]),
@@ -193,5 +202,15 @@ export const upgradeToV2 = (permissions: PermissionSet | null | undefined): Perm
     const key = allResources[slug].key
     next[key] = { ...next[key], read: true }
   }
+  return next
+}
+
+/**
+ * Upgrades a role saved before the Videos collection existed: videos get the same
+ * access as Media (Guest included), since both are the uploads library.
+ */
+export const upgradeToV3 = (permissions: PermissionSet | null | undefined): PermissionSet => {
+  const next: PermissionSet = { ...permissions }
+  if (!next.videos) next.videos = { ...next.media }
   return next
 }

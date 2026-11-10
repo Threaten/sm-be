@@ -16,6 +16,7 @@ import { Services } from './collections/Services'
 import { Staff } from './collections/Staff'
 import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
+import { Videos } from './collections/Videos'
 import { AboutPage } from './globals/AboutPage'
 import { ContactPage } from './globals/ContactPage'
 import { CoursesPage } from './globals/CoursesPage'
@@ -75,6 +76,7 @@ export default buildConfig({
     Testimonials,
     ContactSubmissions,
     Media,
+    Videos,
     Gallery,
     Users,
     Roles,
