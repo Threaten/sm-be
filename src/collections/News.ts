@@ -1,4 +1,4 @@
-import { lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
+import { FixedToolbarFeature, lexicalEditor, UploadFeature } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
 import { can, collectionAccess } from '@/access'
@@ -98,6 +98,9 @@ export const News: CollectionConfig = {
                     },
                   }),
                   EmojiPasteFeature(),
+                  // Always-visible toolbar above the editor (formatting, headings, lists, links, uploads),
+                  // in addition to the toolbar that appears when text is selected.
+                  FixedToolbarFeature(),
                 ],
               }),
             },
