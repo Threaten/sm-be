@@ -1912,6 +1912,10 @@ export interface SiteSetting {
     headline: string;
     ctaLabel: string;
     addressLabel: string;
+    /**
+     * Heading above the opening hours (Contact → Hours).
+     */
+    hoursLabel?: string | null;
     contactLabel: string;
     linksLabel: string;
     copyright: string;
@@ -2444,6 +2448,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         headline?: T;
         ctaLabel?: T;
         addressLabel?: T;
+        hoursLabel?: T;
         contactLabel?: T;
         linksLabel?: T;
         copyright?: T;

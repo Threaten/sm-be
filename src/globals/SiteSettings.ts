@@ -135,6 +135,12 @@ export const SiteSettings = pageGlobal(
                 text('headline'),
                 text('ctaLabel'),
                 text('addressLabel'),
+                {
+                  name: 'hoursLabel',
+                  type: 'text',
+                  defaultValue: 'Giờ mở cửa',
+                  admin: { description: 'Heading above the opening hours (Contact → Hours).' },
+                },
                 text('contactLabel'),
                 text('linksLabel'),
                 text('copyright'),

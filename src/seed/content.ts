@@ -46,12 +46,12 @@ export const siteSettings: SiteSettings = {
   navigation,
   headerCta: { label: "Đăng Ký Ngay", href: "/contact-us" },
   contact: {
-    address: "643 Nguyen Kiem Street\nDuc Nhuan Ward, Ho Chi Minh City",
+    address: "643 Nguyễn Kiệm\nPhường Đức Nhuận, TP. Hồ Chí Minh",
     mapUrl:
       "https://www.google.com/maps/search/?api=1&query=643+Nguyen+Kiem+Street+Duc+Nhuan+Ward+Ho+Chi+Minh+City",
     email: "hello@skillandmix.com",
     phone: "+84 28 3822 0148",
-    hours: "Monday to Friday\n10:00 to 18:00",
+    hours: "Thứ 2 – Thứ 6\n10:00 – 18:00",
   },
   socialLinks: [{ platform: "facebook", label: "Skill & Mix Academy", url: "https://www.facebook.com/p/Skill-Mix-Academy-61564798813025/" }],
   footer: {
@@ -59,6 +59,7 @@ export const siteSettings: SiteSettings = {
     headline: "Sẵn Sàng Bắt Đầu Hành Trình Bartender?",
     ctaLabel: "Đăng Ký Tư Vấn Ngay",
     addressLabel: "Địa Chỉ",
+    hoursLabel: "Giờ Mở Cửa",
     contactLabel: "Liên Hệ",
     linksLabel: "Khám Phá",
     copyright: "© 2026 Skill & Mix Academy.",
