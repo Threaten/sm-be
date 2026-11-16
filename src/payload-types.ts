@@ -207,6 +207,19 @@ export interface Course {
    * Optional. When set, the regular price is crossed out.
    */
   promotionPrice?: string | null;
+  details?:
+    | {
+        /**
+         * For example "Yêu cầu đầu vào".
+         */
+        label: string;
+        /**
+         * Each line is a paragraph; lines starting with "-" become bullet points.
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   outcomes?:
     | {
         /**
@@ -227,6 +240,27 @@ export interface Course {
          * Optional. When set, the lesson opens to show it.
          */
         description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  classMedia?:
+    | {
+        /**
+         * Pick an image from Media or a clip from Videos (MP4 plays everywhere).
+         */
+        file:
+          | {
+              relationTo: 'media';
+              value: string | Media;
+            }
+          | {
+              relationTo: 'videos';
+              value: string | Video;
+            };
+        /**
+         * Optional line under the photo or video.
+         */
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -290,6 +324,34 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * MP4 (H.264) plays in every browser; export as MP4 when you can. Keep files small (under ~100 MB): visitors download what they watch.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: string;
+  /**
+   * What the video shows. Read out by screen readers and used as the player label.
+   */
+  title: string;
+  /**
+   * Optional. Shown before the video plays. Without it, browsers show the first frame.
+   */
+  poster?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Shown on the Team page in this order.
@@ -475,34 +537,6 @@ export interface ContactSubmission {
   message: string;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * MP4 (H.264) plays in every browser; export as MP4 when you can. Keep files small (under ~100 MB): visitors download what they watch.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos".
- */
-export interface Video {
-  id: string;
-  /**
-   * What the video shows. Read out by screen readers and used as the player label.
-   */
-  title: string;
-  /**
-   * Optional. Shown before the video plays. Without it, browsers show the first frame.
-   */
-  poster?: (string | null) | Media;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -885,6 +919,13 @@ export interface CoursesSelect<T extends boolean = true> {
   schedule?: T;
   price?: T;
   promotionPrice?: T;
+  details?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
   outcomes?:
     | T
     | {
@@ -897,6 +938,13 @@ export interface CoursesSelect<T extends boolean = true> {
     | {
         title?: T;
         description?: T;
+        id?: T;
+      };
+  classMedia?:
+    | T
+    | {
+        file?: T;
+        caption?: T;
         id?: T;
       };
   seo?:
@@ -1550,9 +1598,14 @@ export interface CoursesPage {
     reserveLabel: string;
     aboutEyebrow?: string | null;
     aboutTitle?: string | null;
+    detailsEyebrow?: string | null;
+    detailsTitle?: string | null;
     outcomesEyebrow?: string | null;
     outcomesTitle?: string | null;
     outcomesCopy?: string | null;
+    classMediaEyebrow?: string | null;
+    classMediaTitle?: string | null;
+    classMediaCopy?: string | null;
     syllabusEyebrow: string;
     syllabusTitle: string;
     syllabusCopy: string;
@@ -2183,9 +2236,14 @@ export interface CoursesPageSelect<T extends boolean = true> {
         reserveLabel?: T;
         aboutEyebrow?: T;
         aboutTitle?: T;
+        detailsEyebrow?: T;
+        detailsTitle?: T;
         outcomesEyebrow?: T;
         outcomesTitle?: T;
         outcomesCopy?: T;
+        classMediaEyebrow?: T;
+        classMediaTitle?: T;
+        classMediaCopy?: T;
         syllabusEyebrow?: T;
         syllabusTitle?: T;
         syllabusCopy?: T;

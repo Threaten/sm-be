@@ -67,9 +67,32 @@ export const CoursesPage = pageGlobal('courses-page', 'Courses page', [
               },
               {
                 type: 'collapsible',
+                label: 'Course details',
+                admin: { description: 'Shown when a course has details. Leave empty to use the default.' },
+                fields: [
+                  optionalText('detailsEyebrow'),
+                  optionalText('detailsTitle'),
+                  {
+                    ...optionalText('detailsDayLabel'),
+                    admin: { description: 'Word before the automatic number on rows without a label, e.g. "Ngày" gives "Ngày 1".' },
+                  } as Field,
+                ],
+              },
+              {
+                type: 'collapsible',
                 label: "What you'll earn",
                 admin: { description: 'Shown when a course has outcomes. Leave empty to use the default.' },
                 fields: [optionalText('outcomesEyebrow'), optionalText('outcomesTitle'), optionalTextarea('outcomesCopy')],
+              },
+              {
+                type: 'collapsible',
+                label: 'Class photos & videos',
+                admin: { description: 'Shown when a course has class photos or videos. Leave empty to use the default.' },
+                fields: [
+                  optionalText('classMediaEyebrow'),
+                  optionalText('classMediaTitle'),
+                  optionalTextarea('classMediaCopy'),
+                ],
               },
               text('syllabusEyebrow'),
               text('syllabusTitle'),

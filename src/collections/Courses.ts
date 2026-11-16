@@ -96,6 +96,45 @@ export const Courses: CollectionConfig = {
           ],
         },
         {
+          label: 'Course details',
+          description:
+            'What happens on each day, in order: "Ngày 1: Kiến thức cơ bản về ABC", "Ngày 2: ..." and so on. Leave empty to hide the section.',
+          fields: [
+            {
+              name: 'details',
+              label: 'Details',
+              type: 'array',
+              labels: { singular: 'Day', plural: 'Days' },
+              admin: { initCollapsed: true },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'label',
+                      type: 'text',
+                      admin: {
+                        description: 'Optional. Leave empty to number the rows automatically ("Ngày 1", "Ngày 2"...), or write your own, e.g. "Ngày 3–4".',
+                        width: '40%',
+                      },
+                    },
+                    {
+                      name: 'value',
+                      type: 'textarea',
+                      required: true,
+                      admin: {
+                        description:
+                          'What is covered that day, e.g. "Kiến thức cơ bản về ABC". Each line is a paragraph; lines starting with "-" become bullet points.',
+                        width: '60%',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: "What you'll earn",
           description:
             'What students walk away with: skills, certificates, career opportunities. Leave empty to hide the section.',
@@ -136,6 +175,37 @@ export const Courses: CollectionConfig = {
                   name: 'description',
                   type: 'textarea',
                   admin: { description: 'Optional. When set, the lesson opens to show it.' },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Class photos & videos',
+          description:
+            'Moments from real classes, shown as a gallery on the course page. Leave empty to hide the section.',
+          fields: [
+            {
+              name: 'classMedia',
+              label: 'Photos & videos',
+              type: 'array',
+              labels: { singular: 'Photo or video', plural: 'Photos & videos' },
+              admin: { initCollapsed: true },
+              fields: [
+                {
+                  name: 'file',
+                  label: 'Photo or video',
+                  type: 'upload',
+                  relationTo: ['media', 'videos'],
+                  required: true,
+                  admin: {
+                    description: 'Pick an image from Media or a clip from Videos (MP4 plays everywhere).',
+                  },
+                },
+                {
+                  name: 'caption',
+                  type: 'text',
+                  admin: { description: 'Optional line under the photo or video.' },
                 },
               ],
             },
