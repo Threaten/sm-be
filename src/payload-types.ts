@@ -210,11 +210,11 @@ export interface Course {
   details?:
     | {
         /**
-         * For example "Yêu cầu đầu vào".
+         * Optional. Leave empty to number the rows automatically ("Ngày 1", "Ngày 2"...), or write your own, e.g. "Ngày 3–4".
          */
-        label: string;
+        label?: string | null;
         /**
-         * Each line is a paragraph; lines starting with "-" become bullet points.
+         * What is covered that day, e.g. "Kiến thức cơ bản về ABC". Each line is a paragraph; lines starting with "-" become bullet points.
          */
         value: string;
         id?: string | null;
@@ -1600,6 +1600,10 @@ export interface CoursesPage {
     aboutTitle?: string | null;
     detailsEyebrow?: string | null;
     detailsTitle?: string | null;
+    /**
+     * Word before the automatic number on rows without a label, e.g. "Ngày" gives "Ngày 1".
+     */
+    detailsDayLabel?: string | null;
     outcomesEyebrow?: string | null;
     outcomesTitle?: string | null;
     outcomesCopy?: string | null;
@@ -2238,6 +2242,7 @@ export interface CoursesPageSelect<T extends boolean = true> {
         aboutTitle?: T;
         detailsEyebrow?: T;
         detailsTitle?: T;
+        detailsDayLabel?: T;
         outcomesEyebrow?: T;
         outcomesTitle?: T;
         outcomesCopy?: T;
