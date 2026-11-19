@@ -1,4 +1,11 @@
+import type { Field } from 'payload'
+
 import { image, marqueeField, pageGlobal, text, textarea } from './shared'
+
+// The Guide & FAQ tab is optional: left empty, the website shows its built-in text.
+const optional = (field: Field): Field => ({ ...field, required: false }) as Field
+const optionalText = (name: string, description?: string) => optional(text(name, description))
+const optionalTextarea = (name: string, description?: string) => optional(textarea(name, description))
 
 export const HomePage = pageGlobal('home-page', 'Home page', [
   {
@@ -81,6 +88,52 @@ export const HomePage = pageGlobal('home-page', 'Home page', [
             type: 'group',
             admin: { description: 'Quotes are managed in the Testimonials collection.' },
             fields: [text('eyebrow')],
+          },
+        ],
+      },
+      {
+        label: 'Guide & FAQ',
+        description:
+          'Longer text under the courses that answers searches like "học bartender TP.HCM". Left empty, the built-in text is shown.',
+        fields: [
+          {
+            name: 'guide',
+            type: 'group',
+            fields: [
+              optionalText('eyebrow'),
+              optionalText('title', 'Shown as a heading. Include the main search phrase, e.g. "Học bartender tại TP.HCM".'),
+              optionalTextarea('intro'),
+              {
+                name: 'sections',
+                type: 'array',
+                fields: [
+                  optionalText('heading'),
+                  optionalTextarea('body', 'Plain text. Lines starting with "-" become a bulleted list.'),
+                  {
+                    type: 'row',
+                    fields: [
+                      optionalText('linkLabel', 'Optional link at the end of the section.'),
+                      optionalText('linkHref', 'A page on this site, e.g. /courses/bartender-co-ban'),
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            name: 'faq',
+            label: 'FAQ',
+            type: 'group',
+            admin: { description: 'Also sent to Google as FAQ data. Use questions people actually search.' },
+            fields: [
+              optionalText('eyebrow'),
+              optionalText('title'),
+              {
+                name: 'items',
+                type: 'array',
+                fields: [optionalText('question'), optionalTextarea('answer')],
+              },
+            ],
           },
         ],
       },
