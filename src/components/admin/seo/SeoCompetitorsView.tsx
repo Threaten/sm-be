@@ -50,6 +50,48 @@ const CHECKS: { label: string; has: (page: Page) => boolean }[] = [
   { label: 'Video', has: (p) => Boolean(p.media?.videos) },
 ]
 
+/**
+ * Our pages from the "## Our pages" section of report.md, for reports written before the tool
+ * also saved ours.json. Reads the fixed line format of competitors.mjs `line()`.
+ */
+function oursFromReport(markdown: string): Page[] {
+  const start = markdown.indexOf('## Our pages')
+  if (start === -1) return []
+  const end = markdown.indexOf('\n## ', start + 1)
+  const section = markdown.slice(start, end === -1 ? undefined : end)
+  const pages: Page[] = []
+  for (const block of section.split(/^### /m).slice(1)) {
+    const [url, ...rest] = block.split(/\r?\n/).map((line) => line.trim())
+    const body = rest.join('\n')
+    const field = (pattern: RegExp) => body.match(pattern)?.[1]?.trim()
+    const words = field(/^(\d+) words/m)
+    if (!words) {
+      pages.push({ url, status: field(/^\[(.+)\]$/m) ?? 'no data' })
+      continue
+    }
+    const list = (value?: string) => (value && value !== '-' ? value.split(/,\s*/).filter(Boolean) : [])
+    const rating = body.match(/rating ([\d.]+) \(([^)]*)\)/)
+    pages.push({
+      url,
+      status: 200,
+      title: field(/^T: (.*)$/m),
+      words: Number(words),
+      faq: Array.from({ length: Number(field(/FAQ (\d+)/) ?? 0) }, () => ''),
+      schema: list(field(/schema: ([^|\n]*)/)),
+      rating: rating ? { value: rating[1], count: rating[2] } : null,
+      signals: {
+        prices: list(field(/price: ([^|\n]*)/)),
+        schedule: field(/schedule: (\S+)/) === 'yes' ? ['yes'] : [],
+        certificate: field(/certificate: (\S+)/) === 'yes',
+        jobs: field(/jobs: (\S+)/) === 'yes',
+        testimonials: field(/testimonials: (\S+)/) === 'yes',
+      },
+      media: { videos: Number(field(/videos (\d+)/) ?? 0) },
+    })
+  }
+  return pages
+}
+
 const median = (values: number[]) => {
   const sorted = [...values].sort((a, b) => a - b)
   return sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0
@@ -133,7 +175,10 @@ export async function SeoCompetitorsView(props: AdminViewServerProps) {
   }
 
   const loaded = competitors.filter(ok)
-  const ours = (oursFile?.pages ?? []).filter((page) => page?.url)
+  // ours.json from the tool; older reports only have our pages as text in report.md.
+  const ours = (oursFile?.pages?.length ? oursFile.pages : report ? oursFromReport(report.text) : []).filter(
+    (page) => page?.url,
+  )
   const oursLoaded = ours.filter(ok)
   const share = (has: (page: Page) => boolean) =>
     loaded.length ? Math.round((100 * loaded.filter(has).length) / loaded.length) : 0
@@ -236,8 +281,7 @@ export async function SeoCompetitorsView(props: AdminViewServerProps) {
       {report ? (
         <details className="seo-page__raw">
           <summary>
-            Full report as written{!ours.length ? ' (includes our pages until the next weekly report)' : ''}: page
-            outlines and questions
+            Full report as written: page outlines and questions
           </summary>
           <pre>{report.text.trim()}</pre>
         </details>

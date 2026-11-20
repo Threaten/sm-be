@@ -62,6 +62,8 @@
 }
 .seo-page__body {
   display: grid;
+  /* minmax(0, 1fr): the wide table scrolls inside its box instead of stretching the page. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 .seo-page h3 {
@@ -85,7 +87,7 @@
 }
 .seo-page__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 16px;
 }
 .seo-page__card {
