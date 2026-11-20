@@ -45,3 +45,89 @@
   object-fit: contain;
   width: 25px;
 }
+
+/* SEO agent panel on the dashboard (src/components/admin/SeoAgentPanel.tsx) */
+.seo-agent-panel {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 40px;
+  padding: 24px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-elevation-50);
+}
+.seo-agent-panel h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.seo-agent-panel h3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+.seo-agent-panel__head p,
+.seo-agent-panel__meta {
+  margin: 4px 0 0;
+  color: var(--theme-elevation-600);
+  font-size: 13px;
+}
+.seo-agent-panel code {
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--theme-elevation-150);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+.seo-agent-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+.seo-agent-panel__card {
+  padding: 18px 20px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-bg);
+}
+.seo-agent-panel__count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 11px;
+  background: var(--theme-elevation-150);
+  font-size: 12px;
+  text-align: center;
+}
+.seo-agent-panel__list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding-left: 22px;
+  line-height: 1.5;
+}
+.seo-agent-panel__list li::marker {
+  color: var(--theme-elevation-500);
+  font-weight: 700;
+}
+.seo-agent-panel__empty {
+  margin: 14px 0 0;
+  color: var(--theme-elevation-600);
+}
+.seo-agent-panel__alert {
+  padding: 14px 18px;
+  border: 1px solid var(--theme-error-500);
+  border-radius: 6px;
+  background: var(--theme-error-50);
+}
+.seo-agent-panel pre {
+  margin: 8px 0 0;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+.seo-agent-panel__journal summary {
+  cursor: pointer;
+  font-weight: 600;
+}
