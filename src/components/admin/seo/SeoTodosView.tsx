@@ -3,6 +3,8 @@ import type { AdminViewServerProps } from 'payload'
 import path from 'node:path'
 import React from 'react'
 
+import { isSuperAdmin } from '@/access'
+
 import { SeoPage, NoAgentData } from './SeoPage'
 import { bullets, formatDate, Inline, readText, stateDir } from './shared'
 
@@ -28,8 +30,13 @@ function latestEntry(markdown: string) {
 /** SEO → Agent to-dos (/admin/seo): what the nightly SEO agent needs from the owner. */
 export async function SeoTodosView(props: AdminViewServerProps) {
   const dir = stateDir()
+  // The to-do list and the run journal mention server problems, keys and logs: super admins only.
+  // Everyone else sees the facts the agent needs.
+  const superAdmin = isSuperAdmin(props.initPageResult.req.user)
   const [todo, facts, journal, alert] = await Promise.all(
-    ['owner-todo.md', 'facts.md', 'journal.md', 'ALERT.md'].map((name) => readText(path.join(dir, name))),
+    ['owner-todo.md', 'facts.md', 'journal.md', 'ALERT.md'].map((name) =>
+      readText(path.join(dir, name)),
+    ),
   )
 
   const todos = todo ? bullets(todo.text) : []
@@ -41,13 +48,17 @@ export async function SeoTodosView(props: AdminViewServerProps) {
     <SeoPage
       props={props}
       title="Agent to-dos"
-      intro="What the nightly SEO agent needs from you, and what it did last."
+      intro={
+        superAdmin
+          ? 'What the nightly SEO agent needs from you, and what it did last.'
+          : 'Facts the nightly SEO agent needs to write about the academy.'
+      }
     >
       {!todo && !facts && !journal && !alert ? (
         <NoAgentData />
       ) : (
         <div className="seo-page__body">
-          {alertText ? (
+          {superAdmin && alertText ? (
             <div className="seo-page__alert" role="alert">
               <h3>Failed deploy</h3>
               <pre>{alertText}</pre>
@@ -55,31 +66,36 @@ export async function SeoTodosView(props: AdminViewServerProps) {
           ) : null}
 
           <div className="seo-page__grid">
-            <div className="seo-page__card">
-              <h3>
-                To do <span className="seo-page__count">{todos.length}</span>
-              </h3>
-              {todo ? <p className="seo-page__meta">Updated {formatDate(todo.updatedAt)}</p> : null}
-              {todos.length ? (
-                <ol className="seo-page__list">
-                  {todos.map((item, index) => (
-                    <li key={index}>
-                      <Inline text={item} />
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <p className="seo-page__empty">Nothing to do right now.</p>
-              )}
-            </div>
+            {superAdmin ? (
+              <div className="seo-page__card">
+                <h3>
+                  To do <span className="seo-page__count">{todos.length}</span>
+                </h3>
+                {todo ? (
+                  <p className="seo-page__meta">Updated {formatDate(todo.updatedAt)}</p>
+                ) : null}
+                {todos.length ? (
+                  <ol className="seo-page__list">
+                    {todos.map((item, index) => (
+                      <li key={index}>
+                        <Inline text={item} />
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="seo-page__empty">Nothing to do right now.</p>
+                )}
+              </div>
+            ) : null}
 
             <div className="seo-page__card">
               <h3>
                 Facts to fill in <span className="seo-page__count">{missingFacts.length}</span>
               </h3>
               <p className="seo-page__meta">
-                The agent only writes facts it can confirm. Answer these in <code>{path.join(dir, 'facts.md')}</code>{' '}
-                and remove the word TODO from each line you fill in.
+                The agent only writes facts it can confirm. Answer these in{' '}
+                <code>{path.join(dir, 'facts.md')}</code> and remove the word TODO from each line
+                you fill in.
               </p>
               {missingFacts.length ? (
                 <ul className="seo-page__list">
@@ -95,10 +111,12 @@ export async function SeoTodosView(props: AdminViewServerProps) {
             </div>
           </div>
 
-          {entry ? (
+          {superAdmin && entry ? (
             <div className="seo-page__card">
               <h3>Last run{entry.title ? `: ${entry.title}` : ''}</h3>
-              {journal ? <p className="seo-page__meta">Journal updated {formatDate(journal.updatedAt)}</p> : null}
+              {journal ? (
+                <p className="seo-page__meta">Journal updated {formatDate(journal.updatedAt)}</p>
+              ) : null}
               <pre>{entry.body}</pre>
             </div>
           ) : null}

@@ -10,6 +10,12 @@ export const Media: CollectionConfig = {
   hooks: auditCollection('media', 'alt'),
   upload: {
     staticDir: 'media',
+    // Browsers (and the website's image optimiser) may reuse a file for a week instead of
+    // downloading it again; replacing a file in the CMS gives it a new URL.
+    modifyResponseHeaders: ({ headers }) => {
+      headers.set('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400')
+      return headers
+    },
     mimeTypes: ['image/*'],
     imageSizes: [
       { name: 'card', width: 800, height: 1000, position: 'centre' },
