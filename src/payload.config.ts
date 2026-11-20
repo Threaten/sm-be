@@ -38,8 +38,16 @@ const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3003'
 export default buildConfig({
   admin: {
     components: {
-      // Super admins only: the nightly SEO agent's to-do list and missing facts, read from the server.
-      beforeDashboard: ['@/components/admin/SeoAgentPanel#SeoAgentPanel'],
+      // SEO group in the sidebar (every logged-in admin user): the nightly SEO agent's to-dos and competitor research.
+      afterNavLinks: ['@/components/admin/seo/SeoNav#SeoNav'],
+      views: {
+        seoTodos: { Component: '@/components/admin/seo/SeoTodosView#SeoTodosView', path: '/seo', exact: true },
+        seoCompetitors: {
+          Component: '@/components/admin/seo/SeoCompetitorsView#SeoCompetitorsView',
+          path: '/seo/competitors',
+          exact: true,
+        },
+      },
       graphics: {
         Icon: '@/components/admin/SkillMixBrand#SkillMixIcon',
         Logo: '@/components/admin/SkillMixBrand#SkillMixLogo',

@@ -21,7 +21,9 @@ import { SelectAllPermissions as SelectAllPermissions_59e55862f979b28e69f44f2fbc
 import { SocialRowLabel as SocialRowLabel_bbf4fbd20e83b8b06b6841ca6d8292cd } from '@/components/admin/SocialRowLabel'
 import { SkillMixIcon as SkillMixIcon_8a2045adf4adb75c8fa525d86d0759de } from '@/components/admin/SkillMixBrand'
 import { SkillMixLogo as SkillMixLogo_8a2045adf4adb75c8fa525d86d0759de } from '@/components/admin/SkillMixBrand'
-import { SeoAgentPanel as SeoAgentPanel_7c74387aa448f8e47c5cb8ccf1a82200 } from '@/components/admin/SeoAgentPanel'
+import { SeoNav as SeoNav_b383dbddb6a0f5edccbeb78a3658ae51 } from '@/components/admin/seo/SeoNav'
+import { SeoTodosView as SeoTodosView_ff979cac49ed4a8c2626a10aa47b5368 } from '@/components/admin/seo/SeoTodosView'
+import { SeoCompetitorsView as SeoCompetitorsView_adcafdcebd76ecacd33adcb264128d58 } from '@/components/admin/seo/SeoCompetitorsView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -49,6 +51,8 @@ export const importMap = {
   "@/components/admin/SocialRowLabel#SocialRowLabel": SocialRowLabel_bbf4fbd20e83b8b06b6841ca6d8292cd,
   "@/components/admin/SkillMixBrand#SkillMixIcon": SkillMixIcon_8a2045adf4adb75c8fa525d86d0759de,
   "@/components/admin/SkillMixBrand#SkillMixLogo": SkillMixLogo_8a2045adf4adb75c8fa525d86d0759de,
-  "@/components/admin/SeoAgentPanel#SeoAgentPanel": SeoAgentPanel_7c74387aa448f8e47c5cb8ccf1a82200,
+  "@/components/admin/seo/SeoNav#SeoNav": SeoNav_b383dbddb6a0f5edccbeb78a3658ae51,
+  "@/components/admin/seo/SeoTodosView#SeoTodosView": SeoTodosView_ff979cac49ed4a8c2626a10aa47b5368,
+  "@/components/admin/seo/SeoCompetitorsView#SeoCompetitorsView": SeoCompetitorsView_adcafdcebd76ecacd33adcb264128d58,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

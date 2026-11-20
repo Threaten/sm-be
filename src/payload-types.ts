@@ -1471,6 +1471,46 @@ export interface HomePage {
   testimonials: {
     eyebrow: string;
   };
+  guide?: {
+    eyebrow?: string | null;
+    /**
+     * Shown as a heading. Include the main search phrase, e.g. "Học bartender tại TP.HCM".
+     */
+    title?: string | null;
+    intro?: string | null;
+    sections?:
+      | {
+          heading?: string | null;
+          /**
+           * Plain text. Lines starting with "-" become a bulleted list.
+           */
+          body?: string | null;
+          /**
+           * Optional link at the end of the section.
+           */
+          linkLabel?: string | null;
+          /**
+           * A page on this site, e.g. /courses/bartender-co-ban
+           */
+          linkHref?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Also sent to Google as FAQ data. Use questions people actually search.
+   */
+  faq?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    items?:
+      | {
+          question?: string | null;
+          answer?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   /**
    * Optional. Overrides how this page appears in Google and in link previews. Empty fields use the page content.
    */
@@ -2128,6 +2168,35 @@ export interface HomePageSelect<T extends boolean = true> {
     | T
     | {
         eyebrow?: T;
+      };
+  guide?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        sections?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              linkLabel?: T;
+              linkHref?: T;
+              id?: T;
+            };
+      };
+  faq?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
       };
   seo?:
     | T

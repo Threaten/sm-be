@@ -1,0 +1,248 @@
+import type { AdminViewServerProps } from 'payload'
+
+import { readdir } from 'node:fs/promises'
+import path from 'node:path'
+import React from 'react'
+
+import { NoAgentData, SeoPage } from './SeoPage'
+import { bullets, formatDay, Inline, readJson, readText, stateDir } from './shared'
+
+/**
+ * SEO → Competitors (/admin/seo/competitors): competitor research from the SEO agent
+ * (sm-fe/seo-agent/tools/competitors.mjs). Reads the per-page snapshots in state/competitors/*.json and our own
+ * pages from ours.json (both written by the tool), plus the agent's own conclusions from
+ * state/competitor-notes.md. The raw report.md stays available at the bottom.
+ */
+
+type Page = {
+  url: string
+  status: number | string
+  fetchedAt?: string
+  title?: string
+  words?: number
+  faq?: string[]
+  schema?: string[]
+  rating?: { value?: number | string; count?: number | string } | null
+  signals?: {
+    prices?: string[]
+    schedule?: string[]
+    certificate?: boolean
+    jobs?: boolean
+    testimonials?: boolean
+  }
+  media?: { videos?: number }
+  change?: { wordsBefore?: number }
+}
+
+const ok = (page: Page) => page.status === 200
+
+/** The comparisons in the report, as checks that work on any page. */
+const CHECKS: { label: string; has: (page: Page) => boolean }[] = [
+  { label: 'Shows a price', has: (p) => Boolean(p.signals?.prices?.length) },
+  { label: 'Schedule / intake dates', has: (p) => Boolean(p.signals?.schedule?.length) },
+  { label: 'Certificate', has: (p) => Boolean(p.signals?.certificate) },
+  { label: 'Job support', has: (p) => Boolean(p.signals?.jobs) },
+  { label: 'FAQ', has: (p) => Boolean(p.faq?.length) },
+  { label: 'FAQ schema', has: (p) => Boolean(p.schema?.includes('FAQPage')) },
+  { label: 'Course schema', has: (p) => Boolean(p.schema?.includes('Course')) },
+  { label: 'Star rating', has: (p) => Boolean(p.rating) },
+  { label: 'Testimonials', has: (p) => Boolean(p.signals?.testimonials) },
+  { label: 'Video', has: (p) => Boolean(p.media?.videos) },
+]
+
+const median = (values: number[]) => {
+  const sorted = [...values].sort((a, b) => a - b)
+  return sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0
+}
+
+const shortUrl = (url: string) => {
+  try {
+    const { hostname, pathname } = new URL(url)
+    return `${hostname.replace(/^www\./, '')}${pathname === '/' ? '' : decodeURIComponent(pathname)}`
+  } catch {
+    return url
+  }
+}
+
+const Mark = ({ value }: { value: boolean }) => (
+  <span className={value ? 'seo-page__yes' : 'seo-page__no'}>{value ? 'Yes' : 'No'}</span>
+)
+
+function PageRow({ page, ours }: { page: Page; ours?: boolean }) {
+  const price = page.signals?.prices?.slice(0, 2).join(', ')
+  return (
+    <tr className={ours ? 'seo-page__ours' : undefined}>
+      <td>
+        <a href={page.url} target="_blank" rel="noreferrer" title={page.title || page.url}>
+          {shortUrl(page.url)}
+        </a>
+        {page.title ? <span className="seo-page__page-title">{page.title}</span> : null}
+      </td>
+      {ok(page) ? (
+        <>
+          <td className="seo-page__num">
+            {page.words ?? '–'}
+            {page.change?.wordsBefore && page.change.wordsBefore !== page.words ? (
+              <span className="seo-page__page-title">was {page.change.wordsBefore}</span>
+            ) : null}
+          </td>
+          <td>{price || <Mark value={false} />}</td>
+          <td>
+            <Mark value={Boolean(page.signals?.schedule?.length)} />
+          </td>
+          <td>
+            <Mark value={Boolean(page.signals?.certificate)} />
+          </td>
+          <td className="seo-page__num">{page.faq?.length || '–'}</td>
+          <td>{page.rating ? `${page.rating.value ?? '?'} (${page.rating.count ?? '?'})` : '–'}</td>
+          <td className="seo-page__num">{page.media?.videos || '–'}</td>
+        </>
+      ) : (
+        <td colSpan={7} className="seo-page__page-title">
+          Could not load ({String(page.status)})
+        </td>
+      )}
+    </tr>
+  )
+}
+
+export async function SeoCompetitorsView(props: AdminViewServerProps) {
+  const dir = path.join(stateDir(), 'competitors')
+  const files = await readdir(dir).catch(() => [] as string[])
+  const [snapshots, oursFile, report, notes] = await Promise.all([
+    Promise.all(
+      files
+        .filter((file) => file.endsWith('.json') && file !== 'ours.json')
+        .map((file) => readJson<Page>(path.join(dir, file))),
+    ),
+    readJson<{ generatedAt?: string; pages?: Page[] }>(path.join(dir, 'ours.json')),
+    readText(path.join(dir, 'report.md')),
+    readText(path.join(stateDir(), 'competitor-notes.md')),
+  ])
+
+  const competitors = snapshots
+    .filter((page): page is Page => Boolean(page?.url))
+    .sort((a, b) => (b.words || 0) - (a.words || 0))
+  const intro = 'How the pages that rank for our keywords compare with ours. The agent studies them weekly and never copies their text.'
+  if (!competitors.length && !report) {
+    return (
+      <SeoPage props={props} title="Competitors" intro={intro}>
+        <NoAgentData />
+      </SeoPage>
+    )
+  }
+
+  const loaded = competitors.filter(ok)
+  const ours = (oursFile?.pages ?? []).filter((page) => page?.url)
+  const oursLoaded = ours.filter(ok)
+  const share = (has: (page: Page) => boolean) =>
+    loaded.length ? Math.round((100 * loaded.filter(has).length) / loaded.length) : 0
+  const actions = notes ? bullets(notes.text) : []
+
+  return (
+    <SeoPage props={props} title="Competitors" intro={intro}>
+      <div className="seo-page__body">
+      <p className="seo-page__meta">
+        {loaded.length} competitor pages compared{report ? ` · report ${formatDay(report.updatedAt)}` : ''}
+      </p>
+
+      {actions.length ? (
+        <div className="seo-page__card">
+          <h3>What the agent will do about it</h3>
+          {notes ? <p className="seo-page__meta">From competitor-notes.md, updated {formatDay(notes.updatedAt)}</p> : null}
+          <ol className="seo-page__list">
+            {actions.map((item, index) => (
+              <li key={index}>
+                <Inline text={item} />
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : null}
+
+      {loaded.length ? (
+        <div className="seo-page__card">
+          <h3>How competitors compare</h3>
+          <p className="seo-page__meta">
+            Share of the {loaded.length} competitor pages that have each thing
+            {oursLoaded.length ? `, and whether any of our ${oursLoaded.length} checked pages has it` : ''}.
+          </p>
+          <div className="seo-page__stats">
+            <div>
+              <strong>{median(loaded.map((page) => page.words || 0))}</strong>
+              <span>Median words</span>
+              {oursLoaded.length ? (
+                <span className="seo-page__page-title">
+                  Ours: {median(oursLoaded.map((page) => page.words || 0))}
+                </span>
+              ) : null}
+            </div>
+            {CHECKS.map((check) => (
+              <div key={check.label}>
+                <strong>{share(check.has)}%</strong>
+                <span>{check.label}</span>
+                {oursLoaded.length ? (
+                  <span className="seo-page__page-title">
+                    Ours: <Mark value={oursLoaded.some(check.has)} />
+                  </span>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {competitors.length ? (
+        <div className="seo-page__table-wrap">
+          <table className="seo-page__table">
+            <thead>
+              <tr>
+                <th>Page</th>
+                <th>Words</th>
+                <th>Price</th>
+                <th>Schedule</th>
+                <th>Certificate</th>
+                <th>FAQ</th>
+                <th>Rating</th>
+                <th>Videos</th>
+              </tr>
+            </thead>
+            {ours.length ? (
+              <tbody>
+                <tr>
+                  <th colSpan={8} className="seo-page__group">
+                    Our pages
+                  </th>
+                </tr>
+                {ours.map((page) => (
+                  <PageRow key={page.url} page={page} ours />
+                ))}
+              </tbody>
+            ) : null}
+            <tbody>
+              <tr>
+                <th colSpan={8} className="seo-page__group">
+                  Competitor pages, longest first
+                </th>
+              </tr>
+              {competitors.map((page) => (
+                <PageRow key={page.url} page={page} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+
+      {report ? (
+        <details className="seo-page__raw">
+          <summary>
+            Full report as written{!ours.length ? ' (includes our pages until the next weekly report)' : ''}: page
+            outlines and questions
+          </summary>
+          <pre>{report.text.trim()}</pre>
+        </details>
+      ) : null}
+      </div>
+    </SeoPage>
+  )
+}
