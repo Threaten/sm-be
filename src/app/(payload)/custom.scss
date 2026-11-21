@@ -227,41 +227,30 @@
 }
 
 /*
- * Sidebar on real phones. Payload keeps the open menu "sticky" inside the scrolling page and
- * sizes it with 100vh, which on phones causes problems emulators don't show:
- * - a swipe on the menu often scrolls the page behind it instead, so the menu never moves;
- * - 100vh (and even 100dvh on newer iOS Safari) includes the area under the browser toolbar,
- *   so the last items (SEO, Log out) sit behind it.
- * On phones the open menu is a full-screen panel anyway, so pin it to the screen above
- * everything, hide and freeze the page behind it (so nothing behind can draw over the menu
- * or catch its swipes), and leave room at the bottom for the toolbar and the home bar.
+ * Sidebar on phones. Payload shows the open menu as a full-screen box with its own scroll area
+ * (100vh tall, sticky). On real phones that inner scroll area could not be scrolled to the end
+ * (SEO, Log out): the browser toolbars cover part of 100vh and swipes go to the page behind.
+ * Instead, on phones the open menu replaces the page and scrolls with the normal page scroll,
+ * which phones always handle. MobileNavScroll (components/admin) jumps to the top when the menu
+ * opens and back to the previous position when it closes.
  */
 @media (max-width: 768px) {
   .template-default--nav-open .nav {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    position: relative;
+    top: auto;
     height: auto;
-    z-index: 50; /* above the page header (30) and status layer (40), below popups (60) */
-    background-color: var(--theme-bg);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
   }
   .template-default--nav-open .nav__scroll {
-    height: 100%;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    padding-bottom: calc(var(--nav-padding-block-end) + env(safe-area-inset-bottom, 0px) + 96px);
+    height: auto;
+    min-height: inherit;
+    overflow: visible;
+    padding-bottom: calc(var(--nav-padding-block-end) + env(safe-area-inset-bottom, 0px) + 24px);
   }
   .template-default--nav-open .template-default__wrap,
   .template-default--nav-open .template-default__nav-toggler-wrapper {
-    visibility: hidden;
-  }
-  html:has(.template-default--nav-open),
-  body:has(.template-default--nav-open) {
-    overflow: hidden;
+    display: none;
   }
 }
