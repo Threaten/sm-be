@@ -227,16 +227,33 @@
 }
 
 /*
- * Sidebar on phones: Payload sizes it with 100vh, which on mobile browsers is taller
- * than the visible screen (it includes the space behind the address and tool bars),
- * so the last groups (SEO) could not be scrolled into view. dvh is the visible height.
+ * Sidebar on real phones. Payload keeps the open menu "sticky" inside the scrolling page and
+ * sizes it with 100vh, which on phones causes two problems emulators don't show:
+ * - a swipe on the menu often scrolls the page behind it instead, so the menu never moves;
+ * - 100vh (and even 100dvh on newer iOS Safari) includes the area under the browser toolbar,
+ *   so the last groups (SEO) sit behind it.
+ * On phones the open menu is a full-screen overlay anyway, so pin it to the screen, freeze the
+ * page behind it, and leave room at the bottom for the toolbar and the home bar.
  */
-.nav {
-  height: 100vh;
-  height: 100dvh;
-}
-.nav__scroll {
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(var(--nav-padding-block-end) + env(safe-area-inset-bottom, 0px));
+@media (max-width: 768px) {
+  .template-default--nav-open .nav {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: var(--z-nav);
+    background-color: var(--theme-bg);
+  }
+  .template-default--nav-open .nav__scroll {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(var(--nav-padding-block-end) + env(safe-area-inset-bottom, 0px) + 96px);
+  }
+  html:has(.template-default--nav-open),
+  body:has(.template-default--nav-open) {
+    overflow: hidden;
+  }
 }
