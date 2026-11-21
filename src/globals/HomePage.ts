@@ -1,5 +1,6 @@
-import type { Field } from 'payload'
+import type { Field, GlobalAfterReadHook, GlobalConfig } from 'payload'
 
+import { homeGuideDefaults } from './homeGuideDefaults'
 import { image, marqueeField, pageGlobal, text, textarea } from './shared'
 
 // The Guide & FAQ tab is optional: left empty, the website shows its built-in text.
@@ -7,7 +8,27 @@ const optional = (field: Field): Field => ({ ...field, required: false }) as Fie
 const optionalText = (name: string, description?: string) => optional(text(name, description))
 const optionalTextarea = (name: string, description?: string) => optional(textarea(name, description))
 
-export const HomePage = pageGlobal('home-page', 'Home page', [
+const isEmpty = (value: unknown) =>
+  value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0)
+
+/** Fills empty fields from `base`, the same way the website does, so the admin shows what the site shows. */
+function withDefaults(value: unknown, base: unknown): unknown {
+  if (isEmpty(value)) return structuredClone(base)
+  if (typeof base !== 'object' || base === null || Array.isArray(base)) return value
+  if (typeof value !== 'object' || value === null) return value
+  const merged: Record<string, unknown> = { ...(value as Record<string, unknown>) }
+  for (const [key, inner] of Object.entries(base)) merged[key] = withDefaults(merged[key], inner)
+  return merged
+}
+
+// Editors see the built-in Guide & FAQ text in the form instead of empty fields; saving stores it.
+const fillGuideDefaults: GlobalAfterReadHook = ({ doc }) => ({
+  ...doc,
+  guide: withDefaults(doc.guide, homeGuideDefaults.guide),
+  faq: withDefaults(doc.faq, homeGuideDefaults.faq),
+})
+
+const homePage = pageGlobal('home-page', 'Home page', [
   {
     type: 'tabs',
     tabs: [
@@ -94,7 +115,7 @@ export const HomePage = pageGlobal('home-page', 'Home page', [
       {
         label: 'Guide & FAQ',
         description:
-          'Longer text under the courses that answers searches like "học bartender TP.HCM". Left empty, the built-in text is shown.',
+          'Longer text under the courses that answers searches like "học bartender TP.HCM". The SEO agent may also update it. Clear a field to go back to the built-in text.',
         fields: [
           {
             name: 'guide',
@@ -140,3 +161,8 @@ export const HomePage = pageGlobal('home-page', 'Home page', [
     ],
   },
 ])
+
+export const HomePage: GlobalConfig = {
+  ...homePage,
+  hooks: { ...homePage.hooks, afterRead: [...(homePage.hooks?.afterRead ?? []), fillGuideDefaults] },
+}

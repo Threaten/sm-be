@@ -225,3 +225,18 @@
   font-size: 12px;
   font-weight: 400;
 }
+
+/*
+ * Sidebar on phones: Payload sizes it with 100vh, which on mobile browsers is taller
+ * than the visible screen (it includes the space behind the address and tool bars),
+ * so the last groups (SEO) could not be scrolled into view. dvh is the visible height.
+ */
+.nav {
+  height: 100vh;
+  height: 100dvh;
+}
+.nav__scroll {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--nav-padding-block-end) + env(safe-area-inset-bottom, 0px));
+}
