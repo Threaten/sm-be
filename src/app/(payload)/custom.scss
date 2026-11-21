@@ -228,12 +228,13 @@
 
 /*
  * Sidebar on real phones. Payload keeps the open menu "sticky" inside the scrolling page and
- * sizes it with 100vh, which on phones causes two problems emulators don't show:
+ * sizes it with 100vh, which on phones causes problems emulators don't show:
  * - a swipe on the menu often scrolls the page behind it instead, so the menu never moves;
  * - 100vh (and even 100dvh on newer iOS Safari) includes the area under the browser toolbar,
- *   so the last groups (SEO) sit behind it.
- * On phones the open menu is a full-screen overlay anyway, so pin it to the screen, freeze the
- * page behind it, and leave room at the bottom for the toolbar and the home bar.
+ *   so the last items (SEO, Log out) sit behind it.
+ * On phones the open menu is a full-screen panel anyway, so pin it to the screen above
+ * everything, hide and freeze the page behind it (so nothing behind can draw over the menu
+ * or catch its swipes), and leave room at the bottom for the toolbar and the home bar.
  */
 @media (max-width: 768px) {
   .template-default--nav-open .nav {
@@ -243,14 +244,21 @@
     left: 0;
     width: 100%;
     height: auto;
-    z-index: var(--z-nav);
+    z-index: 50; /* above the page header (30) and status layer (40), below popups (60) */
     background-color: var(--theme-bg);
   }
   .template-default--nav-open .nav__scroll {
+    height: 100%;
+    min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
     padding-bottom: calc(var(--nav-padding-block-end) + env(safe-area-inset-bottom, 0px) + 96px);
+  }
+  .template-default--nav-open .template-default__wrap,
+  .template-default--nav-open .template-default__nav-toggler-wrapper {
+    visibility: hidden;
   }
   html:has(.template-default--nav-open),
   body:has(.template-default--nav-open) {
